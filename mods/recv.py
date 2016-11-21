@@ -60,7 +60,7 @@ while True:
         new_list = ""
         while True:
             new_list += recv_buffer_str
-            if recv_buffer_str[len(recv_buffer_str)] == '?':
+            if recv_buffer_str[len(recv_buffer_str)-1] == '?':
                 break
         print new_list
     c = c + 1

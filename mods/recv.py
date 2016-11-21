@@ -58,11 +58,13 @@ while True:
 
     if recv_buffer_str[0] == '!':
         new_list = ""
-        while True:
-            new_list += recv_buffer_str
-            if recv_buffer_str[len(recv_buffer_str)-1] == '?':
-                break
-        print new_list
+        list = 1
+
+    if list == 1:
+        new_list += recv_buffer_str
+        if recv_buffer_str[len(recv_buffer_str)-1] == '?':
+            print "New list:" +  new_list
+            list = 0
     c = c + 1
     radio2.writeAckPayload(1, akpl_buf, len(akpl_buf))
     print ("Loaded payload reply:"),

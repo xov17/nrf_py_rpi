@@ -50,4 +50,4 @@ while True:
         print (pl_buffer)
     else:
         print ("Received: Ack only, no payload")
-    time.sleep(1)
+    time.sleep(3)

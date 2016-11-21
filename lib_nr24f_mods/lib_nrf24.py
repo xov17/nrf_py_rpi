@@ -479,7 +479,7 @@ class NRF24:
 
     def writeList(self, buf):
         buf_len = len(buf)
-        if buf_len <= 8
+        if (buf_len <= 8):
             self.write(buf)
         else:
             i = 0

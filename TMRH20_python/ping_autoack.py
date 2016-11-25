@@ -32,7 +32,7 @@ inp_role = 'none'
 radio.begin()
 radio.enableAckPayload()
 radio.enableDynamicPayloads()
-radio.setRetries(5,15)
+#radio.setRetries(5,15)
 radio.printDetails()
 
 print(' ************ Role Setup *********** ')

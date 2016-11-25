@@ -20,4 +20,7 @@ import RPi.GPIO as GPIO
 
 irq_gpio_pin = None
 
-radio = RF24(17, 0);
+# RPi Alternate, with SPIDEV - Note: Edit RF24/arch/BBB/spi.cpp and  set 'this->device = "/dev/spidev0.0";;' or as listed in /dev
+radio = RF24(17, 0)
+
+

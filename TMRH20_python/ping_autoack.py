@@ -39,7 +39,7 @@ print(' ************ Role Setup *********** ')
 while (inp_role !='0') and (inp_role !='1'):
     inp_role = str(input('Choose a role: Enter 0 for controller 1 for node to be accessed(CTRL+C to exit) '))
 
-if inp_role == '0':
+if (inp_role == '0'):
     print('Role: Controller, starting transmission')
     radio.openWritingPipe(address[0])
     radio.openReadingPipe(1,address[1])
@@ -57,14 +57,14 @@ else:
 radio.startListening()
 
 while 1:
-    if role ==  "controller":
+    if (role ==  "controller"):
         radio.stopListening()
 
         data_to_send = "ping"
         print('Now sending: {}'.format(data_to_send))
         
         # Writing with auto-acks received
-        if radio.write(data_to_send):
+        if (radio.write(data_to_send)):
             if (not radio.available()):
                 print ('Got blank response')
             else:
@@ -79,7 +79,7 @@ while 1:
         
         time.sleep(0.1)
 
-    elif role == "node"
+    elif (role == "node")
         if (radio.available()):
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)

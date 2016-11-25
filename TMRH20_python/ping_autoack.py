@@ -69,7 +69,7 @@ while 1:
                 print ('Got blank response')
             else:
                 while (radio.available()):
-                    length = radio.getDynamicPayloadSize()
+                    length = 32
                     received_payload = radio.read(length)
                     print('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
                     

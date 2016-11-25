@@ -88,9 +88,4 @@ while 1:
             ack_payload = counter + ": got it"
             radio.writeAckPayload(1, ack_payload, len(ack_payload))
             time.sleep(1000)
-          
-
-
-    else:
-
 

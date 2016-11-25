@@ -30,7 +30,7 @@ inp_role = 'none'
 
 
 radio.begin()
-radio.enableAckPayloads()
+radio.enableAckPayload()
 radio.enableDynamicPayloads()
 radio.setRetries(5,15)
 radio.printDetails()
@@ -87,5 +87,6 @@ while 1:
             counter = counter + 1
             ack_payload = counter + ": got it"
             radio.writeAckPayload(1, ack_payload, len(ack_payload))
+            radio.startListening()
             time.sleep(1000)
 

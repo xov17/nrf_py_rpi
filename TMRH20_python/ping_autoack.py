@@ -70,7 +70,7 @@ while 1:
             else:
                 while (radio.available()):
                     #length = radio.getDynamicPayloadSize()
-                    received_payload = radio.read(1)
+                    received_payload = radio.read(32)
                     print('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
                     
         else:
@@ -86,8 +86,7 @@ while 1:
             received = radio.read(length)
             print('{}: {}'.format(counter, received.decode('utf-8')))
             counter = counter + 1
-            ack_payload = counter
-            #ack_payload = str(counter)
+            ack_payload = str(counter)
             #ack_payload = str(counter) + ": got it"
             print('ack_payload: {}'.format(ack_payload))
             radio.writeAckPayload(pipeNo, ack_payload)

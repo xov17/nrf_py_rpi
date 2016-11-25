@@ -91,5 +91,5 @@ while 1:
             print('ack_payload: {}'.format(ack_payload))
             radio.writeAckPayload(pipeNo, ack_payload)
             radio.startListening()
-            time.sleep(1000)
+            
 

@@ -86,7 +86,7 @@ while 1:
             print('{}: {}'.format(counter, received.decode('utf-8')))
             counter = counter + 1
             ack_payload = str(counter) + ": got it"
-            radio.writeAckPayload(1, ack_payload, len(ack_payload))
+            radio.writeAckPayload(1, ack_payload)
             radio.startListening()
             time.sleep(1000)
 

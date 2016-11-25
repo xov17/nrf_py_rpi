@@ -49,7 +49,6 @@ else:
     print('Role: node to be accessed, awaiting transmission')
     radio.openWritingPipe(address[1])
     radio.openReadingPipe(1,address[0])
-    radio.startListening()
     role = "node"
     counter = 0
 
@@ -58,6 +57,7 @@ radio.startListening()
 
 while 1:
     if (role ==  "controller"):
+
         radio.stopListening()
 
         data_to_send = "ping"
@@ -85,7 +85,7 @@ while 1:
             received = radio.read(length)
             print('{}: {}'.format(counter, received.decode('utf-8')))
             counter = counter + 1
-            ack_payload = counter + ": got it"
+            ack_payload = str(counter) + ": got it"
             radio.writeAckPayload(1, ack_payload, len(ack_payload))
             radio.startListening()
             time.sleep(1000)

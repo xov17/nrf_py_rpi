@@ -90,7 +90,7 @@ while 1:
             #ack_payload = str(counter) + ": got it"
             print('ack_payload: {}'.format(ack_payload))
             radio.writeAckPayload(pipeNo, ack_payload)
-             received = radio.read(length)
+            received = radio.read(length)
             radio.startListening()
             
 

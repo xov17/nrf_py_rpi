@@ -79,7 +79,7 @@ while 1:
         
         time.sleep(0.1)
 
-    elif (role == "node")
+    elif (role == "node"):
         if (radio.available()):
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)

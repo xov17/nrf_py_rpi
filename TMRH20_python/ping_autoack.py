@@ -87,7 +87,7 @@ while 1:
 
             
         
-        time.sleep(1000)
+       
 
     elif (role == "node"):
         if (radio.available()):

@@ -83,13 +83,14 @@ while 1:
         if (radio.available()):
             result, pipeNo = radio.available_pipe()
             length = radio.getDynamicPayloadSize()
-            received = radio.read(length)
+           
             print('{}: {}'.format(counter, received.decode('utf-8')))
             counter = counter + 1
             ack_payload = str(counter)
             #ack_payload = str(counter) + ": got it"
             print('ack_payload: {}'.format(ack_payload))
             radio.writeAckPayload(pipeNo, ack_payload)
+             received = radio.read(length)
             radio.startListening()
             
 

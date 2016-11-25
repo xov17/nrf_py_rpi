@@ -66,7 +66,7 @@ while 1:
         # Writing with auto-acks received
         if radio.write(data_to_send):
             if (not radio.available()):
-                print ('Got blank response')'
+                print ('Got blank response')
             else:
                 while (radio.available()):
                     length = radio.getDynamicPayloadSize()

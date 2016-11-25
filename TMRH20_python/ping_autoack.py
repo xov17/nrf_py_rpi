@@ -32,7 +32,7 @@ inp_role = 'none'
 radio.begin()
 radio.enableAckPayload()
 radio.enableDynamicPayloads()
-#radio.setRetries(5,15)
+radio.setRetries(5,15)
 radio.printDetails()
 
 print(' ************ Role Setup *********** ')
@@ -69,7 +69,7 @@ while 1:
                 print ('Got blank response')
             else:
                 while (radio.available()):
-                    length = 32
+                    length = radio.getDynamicPayloadSize()
                     received_payload = radio.read(length)
                     print('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
                     

@@ -32,7 +32,7 @@ inp_role = 'none'
 radio.begin()
 radio.enableAckPayload()
 radio.enableDynamicPayloads()
-#radio.setRetries(5,15)
+radio.setRetries(5,15)
 radio.printDetails()
 
 print(' ************ Role Setup *********** ')
@@ -86,8 +86,8 @@ while 1:
             print('{}: {}'.format(counter, received.decode('utf-8')))
             counter = counter + 1
             ack_payload = str(counter) + ": got it"
-            print('ack_payload: {}'.format(ack_payload))
-            radio.writeAckPayload(1, ack_payload)
+            print('ack_payload: {}'.format(ack_payload)
+            radio.writeAckPayload(0, ack_payload)
             radio.startListening()
             time.sleep(1000)
 

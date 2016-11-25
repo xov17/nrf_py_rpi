@@ -61,20 +61,21 @@ while 1:
         radio.stopListening()
 
         data_to_send = "ping"
-        print "Now sending: " + data_to_send 
+        print('Now sending: {}'.format(data_to_send))
         
         # Writing with auto-acks received
         if radio.write(data_to_send):
             if (not radio.available()):
-                print "Got blank response"
+                print ('Got blank response')'
             else:
                 while (radio.available()):
                     length = radio.getDynamicPayloadSize()
                     received_payload = radio.read(length)
-                    print "Got auto-ack: " + received_payload
+                    print('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
+                    
         else:
             # no ack received
-            print "Sending failed"
+            print('Sending failed')
         
         time.sleep(0.1)
 
@@ -82,6 +83,7 @@ while 1:
         if (radio.available()):
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
+            print('{}: {}'.format(counter, received.decode('utf-8')))
             counter = counter + 1
             ack_payload = counter + ": got it"
             radio.writeAckPayload(1, ack_payload, len(ack_payload))

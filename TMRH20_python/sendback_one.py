@@ -117,7 +117,7 @@ while 1:
 
             else:
                 # no ack received
-                print('Sending failed')
+                print('Sending to node 1 failed')
 
         # ping to node 2
         elif (counter%2 == 0):
@@ -154,7 +154,7 @@ while 1:
                     print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
             else:
                 # no ack received
-                print('Sending failed')
+                print('Sending to node 2 failed')
 
 
     elif (role == "node"):

@@ -58,7 +58,7 @@ elif (inp_role == '1'):
     radio.openReadingPipe(0, addr_central_wr[0])
     role = "node"
     counter = 0
- elif (inp_role == '2'):
+elif (inp_role == '2'):
     print('Role: node2 to be accessed, awaiting transmission')
     radio.openWritingPipe(addr_central_rd[1])
     radio.openReadingPipe(0,addr_central_wr[1])

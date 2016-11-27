@@ -25,7 +25,7 @@ radioNumber = 0
 
 # Address[0] = writing pipe of controller (pipe 0)
 # Address[1:5] = reading pipes of controller
-address = [0xF0F0F0F0AA, 0xF0F0F0F0BB, 0xF0F0F0F0CC]
+address = [0xF0F0F0F0AA, 0xF0F0F0F0BB]
 
 inp_role = 'none'
 
@@ -38,7 +38,9 @@ radio.printDetails()
 
 print(' ************ Role Setup *********** ')
 while (inp_role !='0') and (inp_role !='1'):
-    inp_role = str(input('Choose a role: Enter 0 for controller, 1 for node1, 2, for node2 to be accessed(CTRL+C to exit) '))
+    inp_role = str(input('Choose a role: Enter 0 for controller, 1 for node1,CTRL+C to exit) '))
+
+
 
 if (inp_role == '0'):
     print('Role: Controller, starting transmission')
@@ -53,12 +55,7 @@ elif (inp_role == '1'):
     radio.openReadingPipe(1,address[0])
     role = "node"
     counter = 0
-elif (inp_role == '2'):
-    print('Role: node to be accessed, awaiting transmission')
-    radio.openWritingPipe(address[2])
-    radio.openReadingPipe(1,address[0])
-    role = "node"
-    counter = 0
+
 
 
 radio.startListening()
@@ -68,7 +65,7 @@ while 1:
 
         radio.stopListening()
 
-        data_to_send = "ping"
+        data_to_send = "ping to node 1"
         print('Now sending to Node 1: {}'.format(data_to_send))
         
         # Writing with auto-acks received

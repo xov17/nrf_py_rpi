@@ -37,7 +37,7 @@ radio.setRetries(5,15)
 radio.printDetails()
 
 print(' ************ Role Setup *********** ')
-while (inp_role !='0') and (inp_role !='1'):
+while (inp_role !='0') and (inp_role !='1') and (inp_role !='2'):
     inp_role = str(input('Choose a role: Enter 0 for controller, 1 for node1, 2 for node2 CTRL+C to exit) '))
 
 

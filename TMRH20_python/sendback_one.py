@@ -102,7 +102,8 @@ while 1:
                             received = radio.read(length)
                             print("From pipe #{}: {} @{}".format(pipeNo, received.decode('utf-8'), time.time() - start_time))
                             got_msg = 1
-                    print "Out of while loop"
+
+                    print("Out of while loop")
                     if (got_msg == 0):
                         print("Did not receive msg")
                     else:

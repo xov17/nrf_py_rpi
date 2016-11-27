@@ -138,7 +138,7 @@ while 1:
             received = radio.read(length)
             radio.stopListening()
             print('{}: {}'.format(counter, received.decode('utf-8')))
-            data_sendback = str(countrer) + ": ACK from node"
+            data_sendback = str(counter) + ": ACK from node"
             radio.write(data_sendback)
             radio.startListening()
 

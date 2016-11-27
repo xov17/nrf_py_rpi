@@ -100,7 +100,7 @@ while 1:
 
         # ping to node 2
         elif (counter%2 == 0):
-            radio.openWritingPipe(addr_central_wr[0])
+            radio.openWritingPipe(addr_central_wr[1])
 
             data_to_send = str(counter) + ": ping to node 2"
             print('Now sending to Node 2: {}'.format(data_to_send))
@@ -121,7 +121,9 @@ while 1:
 
 
     elif (role == "node"):
+
         if (radio.available()):
+            counter = counter + 1
             result, pipeNo = radio.available_pipe()
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)

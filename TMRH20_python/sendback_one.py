@@ -29,6 +29,7 @@ addr_central_wr = [0xF0F0F0F0AA, 0xF0F0F0F0BB]
 
 inp_role = 'none'
 
+timeout = 5
 
 radio.begin()
 radio.enableAckPayload()
@@ -69,6 +70,8 @@ elif (inp_role == '2'):
 
 radio.startListening()
 
+got_msg = 0
+
 while 1:
     if (role ==  "controller"):
 
@@ -90,12 +93,19 @@ while 1:
                     print ('Got blank response')
                     
                     radio.startListening()
-                    if (radio.available()):
-                        result, pipeNo = radio.available_pipe()
-                        length = radio.getDynamicPayloadSize()
-                        received = radio.read(length)
-                        print("From pipe #{}: {}".format(pipeNo, received.decode('utf-8')))
+                    start_time = time.time()
+                    while ((time.time() - start_time) < timeout):
+                        if (radio.available()):
+                            result, pipeNo = radio.available_pipe()
+                            length = radio.getDynamicPayloadSize()
+                            received = radio.read(length)
+                            print("From pipe #{}: {}".format(pipeNo, received.decode('utf-8')))
+                            got_msg = 1
 
+                    if (got_msg == 0):
+                        print("Did not receive msg")
+                    else:
+                        got_msg = 0
                 else:
                     # possibly another pipe sent something
                     result, pipeNo = radio.available_pipe()
@@ -118,6 +128,22 @@ while 1:
             if (radio.write(data_to_send)):
                 if (not radio.available()):
                     print ('Got blank response')
+
+                    radio.startListening()
+                    start_time = time.time()
+                    while ((time.time() - start_time) < timeout):
+                        if (radio.available()):
+                            result, pipeNo = radio.available_pipe()
+                            length = radio.getDynamicPayloadSize()
+                            received = radio.read(length)
+                            print("From pipe #{}: {}".format(pipeNo, received.decode('utf-8')))
+                            got_msg = 1
+
+                    if (got_msg == 0):
+                        print("Did not receive msg")
+                    else:
+                        got_msg = 0
+                        
                 else:
                     # possibly another pipe sent something
                     result, pipeNo = radio.available_pipe()

@@ -95,13 +95,14 @@ while 1:
                     radio.startListening()
                     start_time = time.time()
                     while ((time.time() - start_time) < timeout):
+                        
                         if (radio.available()):
                             result, pipeNo = radio.available_pipe()
                             length = radio.getDynamicPayloadSize()
                             received = radio.read(length)
-                            print("From pipe #{}: {}".format(pipeNo, received.decode('utf-8')))
+                            print("From pipe #{}: {} @{}".format(pipeNo, received.decode('utf-8'), time.time() - start_time))
                             got_msg = 1
-
+                    print "Out of while loop"
                     if (got_msg == 0):
                         print("Did not receive msg")
                     else:
@@ -136,14 +137,14 @@ while 1:
                             result, pipeNo = radio.available_pipe()
                             length = radio.getDynamicPayloadSize()
                             received = radio.read(length)
-                            print("From pipe #{}: {}".format(pipeNo, received.decode('utf-8')))
+                            print("From pipe #{}: {} @{}".format(pipeNo, received.decode('utf-8'), time.time() - start_time))
                             got_msg = 1
 
                     if (got_msg == 0):
                         print("Did not receive msg")
                     else:
                         got_msg = 0
-                        
+
                 else:
                     # possibly another pipe sent something
                     result, pipeNo = radio.available_pipe()

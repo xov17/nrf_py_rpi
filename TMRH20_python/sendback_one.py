@@ -133,7 +133,7 @@ while 1:
 
                     radio.startListening()
                     start_time = time.time()
-                    while ((time.time() - start_time) < timeout):
+                    while ((time.time() - start_time) < timeout) && (got_msg == 0):
                         if (radio.available()):
                             result, pipeNo = radio.available_pipe()
                             length = radio.getDynamicPayloadSize()

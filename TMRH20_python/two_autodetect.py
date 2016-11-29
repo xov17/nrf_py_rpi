@@ -83,6 +83,7 @@ if (role == "controller"):
     radio.openReadingPipe(0, addr_central_rd[0])
     data_to_send = "INIT_NODE:Node 1 found by controller"
     print('Finding Node 1 w/ msg: {}}'.format(data_to_send))
+        
         # Writing with auto-acks received
         if (radio.write(data_to_send)):
             if (not radio.available()):

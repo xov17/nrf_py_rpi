@@ -83,24 +83,24 @@ if (role == "controller"):
     radio.openReadingPipe(0, addr_central_rd[0])
     data_to_send = "INIT_NODE:Node 1 found by controller"
     print('Finding Node 1 w/ msg: {}}'.format(data_to_send))
-        
-        # Writing with auto-acks received
-        if (radio.write(data_to_send)):
-            if (not radio.available()):
-                print ('Node 1 confirmed')
-                found_nodes[0] = 1
 
-            else:
-                # possibly another pipe sent something
-                result, pipeNo = radio.available_pipe()
-                length = radio.getDynamicPayloadSize()
-                received = radio.read(length)
-                print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+    # Writing with auto-acks received
+    if (radio.write(data_to_send)):
+        if (not radio.available()):
+            print ('Node 1 confirmed')
+            found_nodes[0] = 1
+
         else:
-            # no ack received
-            print('Did not find node 1')
-            found_nodes[0] = 0
-            radio.closeReadingPipe(0)
+            # possibly another pipe sent something
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+    else:
+        # no ack received
+        print('Did not find node 1')
+        found_nodes[0] = 0
+        radio.closeReadingPipe(0)
 
 
     # test node 2
@@ -109,21 +109,21 @@ if (role == "controller"):
     data_to_send = "Node 2 found by controller"
     print('Finding Node 2 w/ msg: {}}'.format(data_to_send))
     # Writing with auto-acks received
-        if (radio.write(data_to_send)):
-            if (not radio.available()):
-                print ('Node 2 confirmed')
-                found_nodes[1] = 1
-            else:
-                # possibly another pipe sent something
-                result, pipeNo = radio.available_pipe()
-                length = radio.getDynamicPayloadSize()
-                received = radio.read(length)
-                print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+    if (radio.write(data_to_send)):
+        if (not radio.available()):
+            print ('Node 2 confirmed')
+            found_nodes[1] = 1
         else:
-            # no ack received
-            print('Did not find node 2')
-            found_nodes[1] = 0
-            radio.closeReadingPipe(1)
+            # possibly another pipe sent something
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+    else:
+        # no ack received
+        print('Did not find node 2')
+        found_nodes[1] = 0
+        radio.closeReadingPipe(1)
 
 # sending of controller
 while 1:

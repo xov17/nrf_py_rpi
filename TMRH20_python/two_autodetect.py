@@ -174,7 +174,7 @@ while 1:
                 print('Sending to node 1 failed')
 
         # ping to node 2
-        elif (counter%2 == 0) and (found_nodes[1] = 1):
+        elif (counter%2 == 0) and (found_nodes[1] == 1):
             radio.openWritingPipe(addr_central_wr[1])
 
             data_to_send = str(counter) + ": ping to node 2"

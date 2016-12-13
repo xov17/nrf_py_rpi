@@ -20,6 +20,9 @@ Mod of sendback_one.py with detection of live nodes
 ##### sendstring.py
 Send string of any size
 
+##### sendlist.py
+Tested on arrays. Should accomodate any type.
+
 **List of Functions Needed for Controller**
 [ ] Config function
 [ ] Auto-detects available nodes by pinging to them, return value: array with # of addresses

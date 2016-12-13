@@ -436,7 +436,7 @@ if (role == "node"):
 
 
 
-
+counter = 0
 # sending of controller
 while 1:
     if (role ==  "controller"):
@@ -444,20 +444,40 @@ while 1:
         radio.stopListening()
 
         counter = counter + 1
-        
-        # ping to node 1
+        subcounter = subcounter + 1
+
+        # ping to node 1 = the one with the cam
         if (counter%2 == 1) and (found_nodes[0] == 1):
-            
             radio.openWritingPipe(addr_central_wr[0])
 
             #data_to_send = "Someday we'll know, why I wasn't made for you"
-            test_list = [0.1626, 0.333, 1.22, 545454, 3.444]
-            data_to_send = str(test_list)
+            data_to_send = "CTA-REQ-CAM"
             print('Now sending to Node 1: {}'.format(data_to_send))
 
+            radio.stopListening()
             # Send send string
             if (sendString(data_to_send)):
                 print('Sent string!')
+                radio.startListening()
+                response = recvString()
+                print ('Received on Response: {}'.format(response))
+                response_literal = ast.literal_eval(response)
+                print ('Literal eval: {}'.format(response_literal))
+                radio.startListening()
+            else:
+                print ('Did not send string')
+
+            
+            data_to_send = "ATC-REQ-CAM"
+            print('Now sending to Node 1: {}'.format(data_to_send))
+            radio.stopListening()
+            # Send send string
+            if (sendString(data_to_send)):
+                print('Sent string!')
+                radio.startListening()
+                response = recvString()
+                print ('Received on Response: {}'.format(response))
+                radio.startListening()
             else:
                 print ('Did not send string')
 
@@ -467,19 +487,76 @@ while 1:
             radio.openWritingPipe(addr_central_wr[1])
 
             #data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
-            test_list = ["testing", "something", "lalala"]
-            data_to_send = str(test_list)
+            #data_to_send = "Someday we'll know, why I wasn't made for you"
+            data_to_send = "CTA-REQ"
+            print('Now sending to Node 2: {}'.format(data_to_send))
+
+            radio.stopListening()
+            # Send send string
             if (sendString(data_to_send)):
                 print('Sent string!')
+                radio.startListening()
+                response = recvString()
+                print ('Received on Response: {}'.format(response))
+                response_literal = ast.literal_eval(response)
+                print ('Literal eval: {}'.format(response_literal))
+                radio.startListening()
             else:
                 print ('Did not send string')
-               
 
+            
+            data_to_send = "ATC-REQ"
+            print('Now sending to Node 2: {}'.format(data_to_send))
+            radio.stopListening()
+            # Send send string
+            if (sendString(data_to_send)):
+                print('Sent string!')
+                radio.startListening()
+                response = recvString()
+                print ('Received on Response: {}'.format(response))
+                radio.startListening()
+            else:
+                print ('Did not send string')
 
     elif (role == "node"):
 
+        # Wait for command
         response = recvString()
-        print ('Received on Node: {}'.format(response))
-        response_literal = ast.literal_eval(response)
-        print ('Literal eval: {}'.format(response_literal))
+        radio.stopListening()
+        if (response == "CTA-REQ"):
+            # Insert opencv functions
+            # Send list
+            data_to_send = [0.1626, 0.333, 1.22, 545454, 3.444]
+            if (sendString(data_to_send)):
+                print('Sent string CTA img!')
+            else:
+                print ('Did not send string')
+            
+        elif (response == "ATC-REQ"):
+            # Send string
+            data_to_send = "TESTING SENDING FROM ATC"
+            if (sendString(data_to_send)):
+                print('Sent string ATC img!')
+            else:
+                print ('Did not send string')
+        elif (response == "CTA-REQ-CAM"):
+            # Insert opencv functions
+            # Send list
+            data_to_send = [5.1626, 0.333, 1.22, 545454, 3.444]
+            if (sendString(data_to_send)):
+                print('Sent string CTA w cam!')
+            else:
+                print ('Did not send string')
+            
+        elif (response == "ATC-REQ-CAM"):
+            # Send string
+            data_to_send = "TESTING SENDING FROM ATC W CAM"
+            if (sendString(data_to_send)):
+                print('Sent string ATC w cam!')
+            else:
+                print ('Did not send string')
+        else:
+            print("Not a command: {}".format(response))
         radio.startListening()
+
+        

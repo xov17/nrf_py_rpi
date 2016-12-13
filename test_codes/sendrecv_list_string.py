@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 #
-# Central node alternately sends data to 2 different nodes
+# Central node alternately requests data frm 2 different nodes
+# Node 1 sends a string (does ATC)
+# Node 2 sends a list (does CTA)
 #
 
 from __future__ import print_function
@@ -294,6 +296,7 @@ def recvString():
         return "ERROR_RECV: Wrong hash match"
 
 
+##### Main function
 
 
 radio.begin()
@@ -473,7 +476,6 @@ while 1:
                 print('Sent string!')
             else:
                 print ('Did not send string')
-               
 
 
     elif (role == "node"):

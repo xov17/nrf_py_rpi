@@ -220,9 +220,6 @@ while 1:
             received = radio.read(length)
             radio.stopListening()
             print('{}: {}'.format(counter, received.decode('utf-8')))
-            print ('Received  w/o utf-8: {}'.format(received.decode))
-            if (received[0:9] == "INIT_NODE"):
-                print ('Node is initialized')
             data_sendback = str(counter) + ": ACK from node"
             radio.write(data_sendback)
             radio.startListening()

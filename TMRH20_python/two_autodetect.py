@@ -135,7 +135,6 @@ if (role == "controller"):
     for node_num in range(len(found_nodes)):
         if found_nodes[node_num]:
             radio.openWritingPipe(addr_central_wr[node_num])
-            radio.openReadingPipe(node_num, addr_central_rd[node_num])
             data_to_send = "START-NORMAL"
             print('Sending Init Cmd to Nodes: {}'.format(data_to_send))
             while (1):

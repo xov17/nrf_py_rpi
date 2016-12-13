@@ -47,8 +47,8 @@ while (inp_role !='0') and (inp_role !='1') and (inp_role !='2'):
 if (inp_role == '0'):
     print('Role: Controller, starting transmission')
     # radio.openWritingPipe(addr_central_wr[0])
-    # radio.openReadingPipe(0, addr_central_rd[0])
-    # radio.openReadingPipe(1, addr_central_rd[1])
+    radio.openReadingPipe(0, addr_central_rd[0])
+    radio.openReadingPipe(1, addr_central_rd[1])
     # TODO: can insert up to 5 readng pipes
     role = "controller"
 
@@ -85,7 +85,7 @@ if (role == "controller"):
     # test node 1
     radio.openWritingPipe(addr_central_wr[0])
     radio.flush_tx()
-    radio.openReadingPipe(0, addr_central_rd[0])
+    #radio.openReadingPipe(0, addr_central_rd[0])
     data_to_send = "Node 1 found by controller"
     print('Finding Node 1 w/ msg: {}'.format(data_to_send))
 
@@ -111,7 +111,7 @@ if (role == "controller"):
     # test node 2
     radio.openWritingPipe(addr_central_wr[1])
     radio.flush_tx()
-    radio.openReadingPipe(1, addr_central_rd[1])
+    #radio.openReadingPipe(1, addr_central_rd[1])
     data_to_send = "Node 2 found by controller"
     print('Finding Node 2 w/ msg: {}'.format(data_to_send))
     # Writing with auto-acks received

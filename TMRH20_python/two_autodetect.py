@@ -81,7 +81,7 @@ if (role == "controller"):
     # test node 1
     radio.openWritingPipe(addr_central_wr[0])
     radio.openReadingPipe(0, addr_central_rd[0])
-    data_to_send = "INIT_NODE:Node 1 found by controller"
+    data_to_send = "Node 1 found by controller"
     print('Finding Node 1 w/ msg: {}'.format(data_to_send))
 
     # Writing with auto-acks received

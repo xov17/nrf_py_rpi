@@ -71,11 +71,12 @@ def sendString(data_to_send):
         Return Values:
             Return 1 if sent, 0 if not
     """
+    packet_list = []
     hash_orig = hashlib.md5()
     hash_orig.update(data_to_send)
     hash_orig_str = str(hash_orig.hexdigest())
-    print ('{}'.format(hash_orig_str)
-    #print ('len: '.format(len(hash_orig_str)))
+    print ('{}'.format(hash_orig_str))
+    print ('len: {}'.format(len(hash_orig_str)))
     packet_list = parsePacket(data_to_send)
     print ('{}'.format(packet_list))
     for i in range(len(packet_list)):

@@ -186,7 +186,7 @@ def recvString():
             md5 of anticipated string (16 bytes only for 32 byte string!)
         Return Values:
             Return string if properly received, if not, return Error Recv
-    ""
+    """
     # Waiting for SEND-STRING command
     counter = 0
     print ('Waiting for SEND-STRING')
@@ -472,4 +472,3 @@ while 1:
 
         response = recvString()
         print ('{}'.format(response))
-

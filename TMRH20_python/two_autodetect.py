@@ -24,7 +24,7 @@ radioNumber = 0
 addr_central_rd = [0xF0F0F0F0C1, 0xF0F0F0F0D1]
 
 # The read addresses of the peripheral nodes
-addr_central_wr = [0xF0F0F0F0AA, 0xF0F0F0F0BB]
+addr_central_wr = [0xF0F0F0F0AB, 0xF0F0F0F0BC]
 
 
 inp_role = 'none'

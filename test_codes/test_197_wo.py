@@ -526,7 +526,8 @@ while 1:
         if (response == "CTA-REQ"):
             # Insert opencv functions
             # Send list
-            data_to_send = [0.1626, 0.333, 1.22, 545454, 3.444]
+            test_list = [0.1626, 0.333, 1.22, 545454, 3.444]
+            data_to_send = str(test_list)
             if (sendString(data_to_send)):
                 print('Sent string CTA img!')
             else:
@@ -542,7 +543,8 @@ while 1:
         elif (response == "CTA-REQ-CAM"):
             # Insert opencv functions
             # Send list
-            data_to_send = [5.1626, 0.333, 1.22, 545454, 3.444]
+            test_list = [0.1626, 0.333, 1.22, 545454, 3.444]
+            data_to_send = str(test_list)
             if (sendString(data_to_send)):
                 print('Sent string CTA w cam!')
             else:

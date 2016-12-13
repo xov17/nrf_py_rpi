@@ -6,6 +6,7 @@
 
 from __future__ import print_function
 import time
+import hashlib
 from RF24 import *
 import RPi.GPIO as GPIO
 

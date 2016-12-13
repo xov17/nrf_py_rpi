@@ -76,7 +76,7 @@ def sendString(data_to_send):
     print ('{}'.format(hash_orig.hexdigest()))
     print ('{}'.format(len(hash_orig.hexdigest())))
     packet_list = parsePacket(data_to_send)
-    print packet_list
+    print ('{}'.format(packet_list))
     for i in range(len(packet_list)):
         print ('{}: {}'.format(i, packet_list[i]))
     joined_list = "".join(packet_list)

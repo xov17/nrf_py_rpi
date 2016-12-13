@@ -150,7 +150,7 @@ if (role == "controller"):
 # Initialization of nodes
 
 if (role == "node"):
-    print ('Waiting for START-NORMAL')'
+    print ('Waiting for START-NORMAL')
     while (1):
         if (radio.available()):
             counter = counter + 1

@@ -57,15 +57,17 @@ def parsePacket(data_to_send):
 
     return packet_list
 
-def sendString(data_to_send, addr):
+def sendString(data_to_send):
     """
         Description:
             Send string, will detect length of string and send this first. 
             Will also send md5 representation to ensure that the whole string sent was complete :))))
             (16 bytes only for 32 byte string!)
+            Will signal end by sending "END-SEND
         Inputs:
             Data_to_send: string
             Addr: address to send to
+            pipe_read: pipe # to read from
         Return Values:
             Return 1 if sent, 0 if not
     """
@@ -84,32 +86,98 @@ def sendString(data_to_send, addr):
     print hash_joined.hexdigest()
     print len(hash_joined.hexdigest())
 
-    # Writing with auto-acks received
-    if (radio.write(data_to_send)):
-        if (not radio.available()):
-            print ('Got blank response')
+    # Sending Command with retry til sent
+    cmd_to_send = "SEND-STRING"
+    print('Sending SEND-STRING command: {}'.format(cmd_to_send))
+    while (1):
+        if (radio.write(data_to_send)):
+            if (not radio.available()):
+                print ('Sent START-NORMAL to {}'.format(node_num))
+                break
+            else:
+                # possibly another pipe sent something
+                result, pipeNo = radio.available_pipe()
+                length = radio.getDynamicPayloadSize()
+                received = radio.read(length)
+                print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                return 0
+                break
+
+    # Sending hash with retry til sent
+    hash_to_send = str(hash_orig.hexdigest())
+    print('Sending hash: {}'.format(hash_to_send))
+    while (1):
+        if (radio.write(data_to_send)):
+            if (not radio.available()):
+                print ('Sent START-NORMAL to {}'.format(node_num))
+                break
+            else:
+                # possibly another pipe sent something
+                result, pipeNo = radio.available_pipe()
+                length = radio.getDynamicPayloadSize()
+                received = radio.read(length)
+                print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                return 0
+                break
+
+    # Sending # of packets with retry til sent
+    cmd_to_send = "P#:" + str(len(packet_list))
+    print('Sending # of packets: {}'.format(cmd_to_send))
+    while (1):
+        if (radio.write(data_to_send)):
+            if (not radio.available()):
+                print ('Sent # of packets to {}'.format(node_num))
+                break
+            else:
+                # possibly another pipe sent something
+                result, pipeNo = radio.available_pipe()
+                length = radio.getDynamicPayloadSize()
+                received = radio.read(length)
+                print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                return 0
+                break
+   
+    # Sending packet list
+    for i in range(len(packet_list)):
+        # Writing with auto-acks received
+        if (radio.write(packet_list[i])):
+            if (not radio.available()):
+                print ('Got blank response')
+            else:
+                while (radio.available()):
+                    #length = radio.getDynamicPayloadSize()
+                    received_payload = radio.read(32)
+                    print('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
         else:
-            while (radio.available()):
-                #length = radio.getDynamicPayloadSize()
-                received_payload = radio.read(32)
-                print('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
-    else:
-        # no ack received
-        print('Sending failed')
+            # no ack received
+            print('Sending failed')
+
+    # Sending Command with retry til sent
+    cmd_to_send = "END-SEND"
+    print('Sending END-SEND command: {}'.format(cmd_to_send))
+    while (1):
+        if (radio.write(data_to_send)):
+            if (not radio.available()):
+                print ('Sent START-NORMAL to {}'.format(node_num))
+                break
+            else:
+                # possibly another pipe sent something
+                result, pipeNo = radio.available_pipe()
+                length = radio.getDynamicPayloadSize()
+                received = radio.read(length)
+                print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                return 0
+                break
+    return 1
 
 
 
-
-
-
-
-def recvString(addr, len_string, sha_data):
+def recvString():
     """
         Description:
             Will receive string based on anticipated length
             Will compile string
             Tiwala muna na di kailangan ng ordering haha
-            After compiling string, will compare to sha_data
         Inputs:
             Address to read from
             Length of anticipated string
@@ -117,7 +185,105 @@ def recvString(addr, len_string, sha_data):
         Return Values:
             Return string if properly received, if not, return “Error Recv”
     """
+    # Waiting for SEND-STRING command
+    counter = 0
+    print ('Waiting for SEND-STRING')
+    while (counter < 10):
+        if (radio.available()):
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('{}: {}'.format(counter, received.decode('utf-8')))
 
+            if (received.decode('utf-8') == "SEND-STRING"):
+                radio.startListening()
+                break
+            else:
+                counter = counter + 1
+            radio.startListening()
+
+    if (counter == 10):
+        return "ERROR_RECV: Send-String did not receive"
+
+
+    # Waiting for hash
+    hash_received = ""
+    counter = 0
+    print ('Waiting for hash')
+    while (counter < 10):
+        if (radio.available()):
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('{}: {}'.format(counter, received.decode('utf-8')))
+    
+            if (len(received.decode('utf-8')) == 32):
+                radio.startListening()
+                break
+            else:
+                counter = counter + 1
+            radio.startListening()
+    if (counter == 10):
+        return "ERROR_RECV: Hash did not receive"
+
+    hash_received = received.decode('utf-8')
+    # Waiting for # of packets
+    counter = 0
+    print ('Waiting for # of packets')
+    while (counter < 10):
+        if (radio.available()):
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('{}: {}'.format(counter, received.decode('utf-8')))
+            received_data = received.decode('utf-8')
+            if (received_data[0:3] == "P#:"):
+                radio.startListening()
+                break
+            else:
+                print ("{}".format(received_data))
+                counter = counter + 1
+            radio.startListening()
+    if (counter == 10):
+        return "ERROR_RECV: # of Packets did not receive"
+
+    packet_list = []
+    num_packets = int(received_data[3:len(received_data)])
+    # Receiving Packet List
+    counter = 0
+    print ('Waiting for packet list')
+    limit = num_packets + 10
+    while (counter < limit):
+        if (radio.available()):
+
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            radio.stopListening()
+            received_string = received.decode('utf-8')
+            print('{}: {}'.format(counter, received_string))
+
+            if (received_string == "END-SEND"):
+                break
+            else:
+                packet_list.append(received_string)
+            counter = counter + 1
+            radio.startListening()
+
+    if (counter > num_packets):
+        return "ERROR_RECV: Wrong number of packets"
+
+    print ('{}'.format(packet_list))
+    joined_list = "".join(packet_list)
+    print ('{}'.format(joined_list))
+    hash_joined = hashlib.md5()
+    hash_joinded.update(joined_list)
+    hash_joined_str = str(hash_joined.hexdigest())
+    if (hash_joined_str == hash_received):
+        print "match!"
+        return received_string
+    else:
+        return "ERROR_RECV: Wrong hash match"
 
 
 
@@ -276,89 +442,32 @@ while 1:
             
             radio.openWritingPipe(addr_central_wr[0])
 
-            data_to_send = str(counter) + ": ping to node 1"
+            data_to_send = "Someday we'll know, why I wasn't made for you"
             print('Now sending to Node 1: {}'.format(data_to_send))
 
-            # Writing with auto-acks received
-            if (radio.write(data_to_send)):
-                if (not radio.available()):
-                    print ('Got blank response')
-                    
-                    radio.startListening()
-                    start_time = time.time()
-                    while ((time.time() - start_time) < timeout) and (got_msg == 0):
-                        
-                        if (radio.available()):
-                            result, pipeNo = radio.available_pipe()
-                            length = radio.getDynamicPayloadSize()
-                            received = radio.read(length)
-                            print("From pipe #{}: {} @{}".format(pipeNo, received.decode('utf-8'), time.time() - start_time))
-                            got_msg = 1
-
-                    print("Out of while loop")
-                    if (got_msg == 0):
-                        print("Did not receive msg")
-                    else:
-                        got_msg = 0
-                else:
-                    # possibly another pipe sent something
-                    result, pipeNo = radio.available_pipe()
-                    length = radio.getDynamicPayloadSize()
-                    received = radio.read(length)
-                    print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
-
+            # Send send string
+            if (sendString(data_to_send)):
+                print "Sent string!"
             else:
-                # no ack received
-                print('Sending to node 1 failed')
+                print "Did not send string"
+
 
         # ping to node 2
         elif (counter%2 == 0) and (found_nodes[1] == 1):
             radio.openWritingPipe(addr_central_wr[1])
 
-            data_to_send = str(counter) + ": ping to node 2"
+            data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why"
             print('Now sending to Node 2: {}'.format(data_to_send))
-
-            # Writing with auto-acks received
-            if (radio.write(data_to_send)):
-                if (not radio.available()):
-                    print ('Got blank response')
-
-                    radio.startListening()
-                    start_time = time.time()
-                    while ((time.time() - start_time) < timeout) and (got_msg == 0):
-                        if (radio.available()):
-                            result, pipeNo = radio.available_pipe()
-                            length = radio.getDynamicPayloadSize()
-                            received = radio.read(length)
-                            print("From pipe #{}: {} @{}".format(pipeNo, received.decode('utf-8'), time.time() - start_time))
-                            got_msg = 1
-
-                    if (got_msg == 0):
-                        print("Did not receive msg")
-                    else:
-                        got_msg = 0
-
-                else:
-                    # possibly another pipe sent something
-                    result, pipeNo = radio.available_pipe()
-                    length = radio.getDynamicPayloadSize()
-                    received = radio.read(length)
-                    print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+            
+            if (sendString(data_to_send)):
+                print "Sent string!"
             else:
-                # no ack received
-                print('Sending to node 2 failed')
+                print "Did not send string"
+               
 
 
     elif (role == "node"):
 
-        if (radio.available()):
-            counter = counter + 1
-            result, pipeNo = radio.available_pipe()
-            length = radio.getDynamicPayloadSize()
-            received = radio.read(length)
-            radio.stopListening()
-            print('{}: {}'.format(counter, received.decode('utf-8')))
-            data_sendback = str(counter) + ": ACK from node"
-            radio.write(data_sendback)
-            radio.startListening()
+        response = recvString()
+        print ('{}'.format(response))
 

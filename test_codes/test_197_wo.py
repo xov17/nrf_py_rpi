@@ -444,7 +444,7 @@ while 1:
         radio.stopListening()
 
         counter = counter + 1
-        subcounter = subcounter + 1
+        
 
         # ping to node 1 = the one with the cam
         if (counter%2 == 1) and (found_nodes[0] == 1):

@@ -159,6 +159,7 @@ if (role == "node"):
             print('{}: {}'.format(counter, received.decode('utf-8')))
             if (received.decode('utf-8') == "START-NORMAL"):
                 break
+            radio.startListening()
 
 
 

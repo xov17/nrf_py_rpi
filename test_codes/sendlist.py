@@ -467,7 +467,7 @@ while 1:
             radio.openWritingPipe(addr_central_wr[1])
 
             #data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
-            data_to_send = ["testing", "something", "lalala"]
+            test_list= ["testing", "something", "lalala"]
             data_to_send = str(test_list)
             if (sendString(data_to_send)):
                 print('Sent string!')

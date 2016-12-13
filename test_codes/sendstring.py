@@ -281,7 +281,7 @@ def recvString():
     joined_list = "".join(packet_list)
     print ('{}'.format(joined_list))
     hash_joined = hashlib.md5()
-    hash_joinded.update(joined_list)
+    hash_joined.update(joined_list)
     hash_joined_str = str(hash_joined.hexdigest())
     if (hash_joined_str == hash_received):
         print ('match!')

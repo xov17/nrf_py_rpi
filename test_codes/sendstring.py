@@ -476,4 +476,5 @@ while 1:
     elif (role == "node"):
 
         response = recvString()
-        print ('{}'.format(response))
+        print ('Received on Node: {}'.format(response))
+        radio.startListening()

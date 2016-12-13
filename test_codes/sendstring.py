@@ -73,8 +73,10 @@ def sendString(data_to_send):
     """
     hash_orig = hashlib.md5()
     hash_orig.update(data_to_send)
-    print ('{}'.format(str(hash_orig.hexdigest()))
-    print ('{}'.format(len(str(hash_orig.hexdigest()))))
+    hash_orig_str = str(hash_orig.hexdigest())
+    print ('{}'.format(hash_orig_str)
+    orig_len = len(hash_orig_str)
+    print ('len: {}'.format(orig_len))
     packet_list = parsePacket(data_to_send)
     print ('{}'.format(packet_list))
     for i in range(len(packet_list)):
@@ -83,9 +85,9 @@ def sendString(data_to_send):
     print ('{}'.format(joined_list))
     hash_joined = hashlib.md5()
     hash_joined.update(joined_list)
-    print ('{}'.format(str(hash_joined.hexdigest())))
-    print ('{}'.format(len(str(hash_joined.hexdigest()))))
-
+    hash_joined_str = str(hash_joined.hexdigest())
+    print ('{}'.format(hash_joined_str))
+    print ('{}'.format(len(hash_joined_str)))
     # Sending Command with retry til sent
     cmd_to_send = "SEND-STRING"
     print('Sending SEND-STRING command: {}'.format(cmd_to_send))

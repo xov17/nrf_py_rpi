@@ -1,0 +1,364 @@
+#!/usr/bin/env python
+
+#
+# Central node alternately sends data to 2 different nodes
+#
+
+from __future__ import print_function
+import time
+from RF24 import *
+import RPi.GPIO as GPIO
+
+irq_gpio_pin = None
+
+# Radio Number: GPIO number, SPI bus 0 or 1
+radio = RF24(17, 0)
+
+# Unique Identifier for this Node
+# Controller/Node0 = 0
+radioNumber = 0
+# Node1 = 1
+#radioNumber = 1
+
+# The write addresses of the peripheral nodes
+addr_central_rd = [0xF0F0F0F0C1, 0xF0F0F0F0D1]
+
+# The read addresses of the peripheral nodes
+addr_central_wr = [0xF0F0F0F0AB, 0xF0F0F0F0BC]
+
+
+inp_role = 'none'
+
+timeout = 5
+
+
+
+def parsePacket(data_to_send):
+    """
+        Accepts string
+        Returns list of 32 byte strings (if applicable)
+        For sending packets
+    """
+    packet_list = []
+    len_data = len(data_to_send)
+
+    i = 0
+    while (1):
+        starting = i*32
+        if (len_data <= 32):
+            end = starting + len_data
+            packet_list.append(data_to_send[starting:end])
+            break
+        else:
+            end = starting + 32
+            packet_list.append(data_to_send[starting:end])
+            len_data = len_data - 32
+        i = i + 1
+
+    return packet_list
+
+def sendString(data_to_send, addr):
+    """
+        Description:
+            Send string, will detect length of string and send this first. 
+            Will also send md5 representation to ensure that the whole string sent was complete :))))
+            (16 bytes only for 32 byte string!)
+        Inputs:
+            Data_to_send: string
+            Addr: address to send to
+        Return Values:
+            Return 1 if sent, 0 if not
+    """
+    hash_orig = hashlib.md5()
+    hash_orig.update(data_to_send)
+    print hash_orig.hexdigest()
+    print len(hash_orig.hexdigest())
+    packet_list = parsePacket(data_to_send)
+    print packet_list
+    for i in range(len(packet_list)):
+        print ('{}: {}'.format(i, packet_list[i]))
+    joined_list = "".join(packet_list)
+    print joined_list
+    hash_joined = hashlib.md5()
+    hash_joined.update(joined_list)
+    print hash_joined.hexdigest()
+    print len(hash_joined.hexdigest())
+
+    # Writing with auto-acks received
+    if (radio.write(data_to_send)):
+        if (not radio.available()):
+            print ('Got blank response')
+        else:
+            while (radio.available()):
+                #length = radio.getDynamicPayloadSize()
+                received_payload = radio.read(32)
+                print('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
+    else:
+        # no ack received
+        print('Sending failed')
+
+
+
+
+
+
+
+def recvString(addr, len_string, sha_data):
+    """
+        Description:
+            Will receive string based on anticipated length
+            Will compile string
+            Tiwala muna na di kailangan ng ordering haha
+            After compiling string, will compare to sha_data
+        Inputs:
+            Address to read from
+            Length of anticipated string
+            md5 of anticipated string (16 bytes only for 32 byte string!)
+        Return Values:
+            Return string if properly received, if not, return “Error Recv”
+    """
+
+
+
+
+
+radio.begin()
+radio.enableAckPayload()
+radio.setAutoAck(True)
+radio.enableDynamicPayloads()
+radio.setRetries(5,15)
+radio.printDetails()
+
+print(' ************ Role Setup *********** ')
+while (inp_role !='0') and (inp_role !='1') and (inp_role !='2'):
+    inp_role = str(input('Choose a role: Enter 0 for controller, 1 for node1, 2 for node2 CTRL+C to exit) '))
+
+
+
+if (inp_role == '0'):
+    print('Role: Controller, starting transmission')
+    # radio.openWritingPipe(addr_central_wr[0])
+    radio.openReadingPipe(0, addr_central_rd[0])
+    radio.openReadingPipe(1, addr_central_rd[1])
+    # TODO: can insert up to 5 readng pipes
+    role = "controller"
+
+    counter = 0
+
+elif (inp_role == '1'):
+    print('Role: node1 to be accessed, awaiting transmission')
+    radio.openWritingPipe(addr_central_rd[0])
+    radio.openReadingPipe(0, addr_central_wr[0])
+    role = "node"
+    counter = 0
+elif (inp_role == '2'):
+    print('Role: node2 to be accessed, awaiting transmission')
+    radio.openWritingPipe(addr_central_rd[1])
+    radio.openReadingPipe(0,addr_central_wr[1])
+    role = "node"
+    counter = 0
+
+radio.startListening()
+
+got_msg = 0
+startNormalOperation = 0
+
+pipeNo = 0
+result = 0
+# to accomodate for the 6 reading pipes/nodes
+found_nodes = [0, 0, 0 ,0 ,0 ,0]
+
+# detect live nodes
+if (role == "controller"):
+
+    radio.stopListening()
+
+    # test node 1
+    radio.openWritingPipe(addr_central_wr[0])
+    radio.flush_tx()
+    #radio.openReadingPipe(0, addr_central_rd[0])
+    data_to_send = "Node 1 found by controller"
+    print('Finding Node 1 w/ msg: {}'.format(data_to_send))
+
+    # Writing with auto-acks received
+    if (radio.write(data_to_send)):
+        if (not radio.available()):
+            print ('Node 1 confirmed')
+            found_nodes[0] = 1
+
+        else:
+            # possibly another pipe sent something
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+    else:
+        # no ack received or error
+        print('Did not find node 1')
+        found_nodes[0] = 0
+        radio.closeReadingPipe(0)
+
+
+    # test node 2
+    radio.openWritingPipe(addr_central_wr[1])
+    radio.flush_tx()
+    #radio.openReadingPipe(1, addr_central_rd[1])
+    data_to_send = "Node 2 found by controller"
+    print('Finding Node 2 w/ msg: {}'.format(data_to_send))
+    # Writing with auto-acks received
+    if (radio.write(data_to_send)):
+        if (not radio.available()):
+            print ('Node 2 confirmed')
+            found_nodes[1] = 1
+        else:
+            # possibly another pipe sent something
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+    else:
+        # no ack received or error 
+        print('Did not find node 2')
+        found_nodes[1] = 0
+        radio.closeReadingPipe(1)
+
+    # Send init messages from controller
+    for node_num in range(len(found_nodes)):
+        if found_nodes[node_num]:
+            radio.openWritingPipe(addr_central_wr[node_num])
+            data_to_send = "START-NORMAL"
+            print('Sending Init Cmd to Nodes: {}'.format(data_to_send))
+            while (1):
+                if (radio.write(data_to_send)):
+                    if (not radio.available()):
+                        print ('Sent START-NORMAL to {}'.format(node_num))
+                        break
+                    else:
+                        # possibly another pipe sent something
+                        result, pipeNo = radio.available_pipe()
+                        length = radio.getDynamicPayloadSize()
+                        received = radio.read(length)
+                        print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                        break
+
+
+# Initialization of nodes
+counter = 0
+if (role == "node"):
+    print ('Waiting for START-NORMAL')
+    while (1):
+        if (radio.available()):
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('{}: {}'.format(counter, received.decode('utf-8')))
+            ack_payload = str(counter) + ": got it"
+            print('ack_payload: {}'.format(ack_payload))
+            radio.writeAckPayload(pipeNo, ack_payload)
+            if (received.decode('utf-8') == "START-NORMAL"):
+                break
+            radio.startListening()
+
+
+
+
+
+# sending of controller
+while 1:
+    if (role ==  "controller"):
+
+        radio.stopListening()
+
+        counter = counter + 1
+        
+        # ping to node 1
+        if (counter%2 == 1) and (found_nodes[0] == 1):
+            
+            radio.openWritingPipe(addr_central_wr[0])
+
+            data_to_send = str(counter) + ": ping to node 1"
+            print('Now sending to Node 1: {}'.format(data_to_send))
+
+            # Writing with auto-acks received
+            if (radio.write(data_to_send)):
+                if (not radio.available()):
+                    print ('Got blank response')
+                    
+                    radio.startListening()
+                    start_time = time.time()
+                    while ((time.time() - start_time) < timeout) and (got_msg == 0):
+                        
+                        if (radio.available()):
+                            result, pipeNo = radio.available_pipe()
+                            length = radio.getDynamicPayloadSize()
+                            received = radio.read(length)
+                            print("From pipe #{}: {} @{}".format(pipeNo, received.decode('utf-8'), time.time() - start_time))
+                            got_msg = 1
+
+                    print("Out of while loop")
+                    if (got_msg == 0):
+                        print("Did not receive msg")
+                    else:
+                        got_msg = 0
+                else:
+                    # possibly another pipe sent something
+                    result, pipeNo = radio.available_pipe()
+                    length = radio.getDynamicPayloadSize()
+                    received = radio.read(length)
+                    print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+
+            else:
+                # no ack received
+                print('Sending to node 1 failed')
+
+        # ping to node 2
+        elif (counter%2 == 0) and (found_nodes[1] == 1):
+            radio.openWritingPipe(addr_central_wr[1])
+
+            data_to_send = str(counter) + ": ping to node 2"
+            print('Now sending to Node 2: {}'.format(data_to_send))
+
+            # Writing with auto-acks received
+            if (radio.write(data_to_send)):
+                if (not radio.available()):
+                    print ('Got blank response')
+
+                    radio.startListening()
+                    start_time = time.time()
+                    while ((time.time() - start_time) < timeout) and (got_msg == 0):
+                        if (radio.available()):
+                            result, pipeNo = radio.available_pipe()
+                            length = radio.getDynamicPayloadSize()
+                            received = radio.read(length)
+                            print("From pipe #{}: {} @{}".format(pipeNo, received.decode('utf-8'), time.time() - start_time))
+                            got_msg = 1
+
+                    if (got_msg == 0):
+                        print("Did not receive msg")
+                    else:
+                        got_msg = 0
+
+                else:
+                    # possibly another pipe sent something
+                    result, pipeNo = radio.available_pipe()
+                    length = radio.getDynamicPayloadSize()
+                    received = radio.read(length)
+                    print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+            else:
+                # no ack received
+                print('Sending to node 2 failed')
+
+
+    elif (role == "node"):
+
+        if (radio.available()):
+            counter = counter + 1
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            radio.stopListening()
+            print('{}: {}'.format(counter, received.decode('utf-8')))
+            data_sendback = str(counter) + ": ACK from node"
+            radio.write(data_sendback)
+            radio.startListening()
+

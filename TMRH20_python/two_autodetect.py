@@ -98,7 +98,8 @@ if (role == "controller"):
             received = radio.read(length)
             print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
     else:
-        # no ack received
+        # no ack received or error
+        result, pipeNo = radio.available_pipe()
         length = radio.getDynamicPayloadSize()
         received = radio.read(length)
         print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
@@ -124,7 +125,7 @@ if (role == "controller"):
             received = radio.read(length)
             print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
     else:
-        # no ack received
+        # no ack received or error 
         result, pipeNo = radio.available_pipe()
         length = radio.getDynamicPayloadSize()
         received = radio.read(length)

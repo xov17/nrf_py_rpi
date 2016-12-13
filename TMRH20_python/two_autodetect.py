@@ -33,6 +33,7 @@ timeout = 5
 
 radio.begin()
 radio.enableAckPayload()
+radio.setAutoAck()
 radio.enableDynamicPayloads()
 radio.setRetries(5,15)
 radio.printDetails()

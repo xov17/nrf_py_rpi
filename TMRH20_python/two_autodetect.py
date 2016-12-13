@@ -106,7 +106,7 @@ if (role == "controller"):
         found_nodes[0] = 0
         radio.closeReadingPipe(0)
 
-    sleep(2)
+
     # test node 2
     radio.openWritingPipe(addr_central_wr[1])
     radio.flush_tx()
@@ -152,7 +152,7 @@ if (role == "controller"):
 
 
 # Initialization of nodes
-
+counter = 0
 if (role == "node"):
     print ('Waiting for START-NORMAL')
     while (1):
@@ -161,6 +161,9 @@ if (role == "node"):
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
             print('{}: {}'.format(counter, received.decode('utf-8')))
+            ack_payload = str(counter) + ": got it"
+            print('ack_payload: {}'.format(ack_payload))
+            radio.writeAckPayload(pipeNo, ack_payload)
             if (received.decode('utf-8') == "START-NORMAL"):
                 break
             radio.startListening()

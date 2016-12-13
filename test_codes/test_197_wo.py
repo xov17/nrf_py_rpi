@@ -108,7 +108,7 @@ def sendString(data_to_send):
                 return 0
                 break
 
-
+  
     # Sending hash with retry til sent
     hash_to_send = str(hash_orig.hexdigest())
     print('Sending hash: {}'.format(hash_to_send))
@@ -176,6 +176,7 @@ def sendString(data_to_send):
                 break
 
     radio.flush_tx()
+    print "Sent without error!"
     return 1
 
 
@@ -463,7 +464,6 @@ while 1:
                 print ('Received on Response: {}'.format(response))
                 response_literal = ast.literal_eval(response)
                 print ('Literal eval: {}'.format(response_literal))
-                radio.startListening()
             else:
                 print ('Did not send string')
 
@@ -477,7 +477,6 @@ while 1:
                 radio.startListening()
                 response = recvString()
                 print ('Received on Response: {}'.format(response))
-                radio.startListening()
             else:
                 print ('Did not send string')
 
@@ -514,13 +513,14 @@ while 1:
                 radio.startListening()
                 response = recvString()
                 print ('Received on Response: {}'.format(response))
-                radio.startListening()
+               
             else:
                 print ('Did not send string')
 
     elif (role == "node"):
 
         # Wait for command
+        radio.startListening()
         response = recvString()
         radio.stopListening()
         if (response == "CTA-REQ"):
@@ -559,6 +559,7 @@ while 1:
                 print ('Did not send string')
         else:
             print("Not a command: {}".format(response))
-        radio.startListening()
+
+       
 
         

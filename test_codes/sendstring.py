@@ -80,7 +80,7 @@ def sendString(data_to_send):
     for i in range(len(packet_list)):
         print ('{}: {}'.format(i, packet_list[i]))
     joined_list = "".join(packet_list)
-    print joined_list
+    print ('{}'.format(joined_list))
     hash_joined = hashlib.md5()
     hash_joined.update(joined_list)
     print ('{}'.format(hash_joined.hexdigest()))

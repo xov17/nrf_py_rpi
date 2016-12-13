@@ -21,7 +21,7 @@ radioNumber = 0
 #radioNumber = 1
 
 # The write addresses of the peripheral nodes
-addr_central_rd = [0xF0F0F0F0A1, 0xF0F0F0F0B1]
+addr_central_rd = [0xF0F0F0F0C1, 0xF0F0F0F0D1]
 
 # The read addresses of the peripheral nodes
 addr_central_wr = [0xF0F0F0F0AA, 0xF0F0F0F0BB]

@@ -71,6 +71,8 @@ radio.startListening()
 got_msg = 0
 startNormalOperation = 0
 
+pipeNo = 0
+result = 0
 # to accomodate for the 6 reading pipes/nodes
 found_nodes = [0, 0, 0 ,0 ,0 ,0]
 

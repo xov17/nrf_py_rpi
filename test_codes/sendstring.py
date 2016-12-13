@@ -94,7 +94,7 @@ def sendString(data_to_send):
     cmd_to_send = "SEND-STRING"
     print('Sending SEND-STRING command: {}'.format(cmd_to_send))
     while (1):
-        if (radio.write(data_to_send)):
+        if (radio.write(cmd_to_send)):
             if (not radio.available()):
                 print ('Sent START-NORMAL to {}'.format(node_num))
                 break
@@ -111,7 +111,7 @@ def sendString(data_to_send):
     hash_to_send = str(hash_orig.hexdigest())
     print('Sending hash: {}'.format(hash_to_send))
     while (1):
-        if (radio.write(data_to_send)):
+        if (radio.write(hash_to_send)):
             if (not radio.available()):
                 print ('Sent START-NORMAL to {}'.format(node_num))
                 break
@@ -128,7 +128,7 @@ def sendString(data_to_send):
     cmd_to_send = "P#:" + str(len(packet_list))
     print('Sending # of packets: {}'.format(cmd_to_send))
     while (1):
-        if (radio.write(data_to_send)):
+        if (radio.write(cmd_to_send)):
             if (not radio.available()):
                 print ('Sent # of packets to {}'.format(node_num))
                 break

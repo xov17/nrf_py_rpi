@@ -449,9 +449,9 @@ while 1:
 
             # Send send string
             if (sendString(data_to_send)):
-                print "Sent string!"
+                print('Sent string!')
             else:
-                print "Did not send string"
+                print ('Did not send string')
 
 
         # ping to node 2
@@ -462,9 +462,9 @@ while 1:
             print('Now sending to Node 2: {}'.format(data_to_send))
             
             if (sendString(data_to_send)):
-                print "Sent string!"
+                print('Sent string!')
             else:
-                print "Did not send string"
+                print ('Did not send string')
                
 
 

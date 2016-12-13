@@ -12,7 +12,7 @@ import RPi.GPIO as GPIO
 irq_gpio_pin = None
 
 # Radio Number: GPIO number, SPI bus 0 or 1
-radio = RF24(17,0)
+radio = RF24(17, 0)
 
 # Unique Identifier for this Node
 # Controller/Node0 = 0
@@ -69,6 +69,7 @@ elif (inp_role == '2'):
 radio.startListening()
 
 got_msg = 0
+startNormalOperation = 0
 
 # to accomodate for the 6 reading pipes/nodes
 found_nodes = [0, 0, 0 ,0 ,0 ,0]
@@ -124,6 +125,46 @@ if (role == "controller"):
         print('Did not find node 2')
         found_nodes[1] = 0
         radio.closeReadingPipe(1)
+
+    # Send init messages from controller
+    for node_num in range(len(found_nodes)):
+        if found_nodes[node_num]:
+            radio.openWritingPipe(addr_central_wr[node_num])
+            radio.openReadingPipe(node_num, addr_central_rd[node_num])
+            data_to_send = "START-NORMAL"
+            print('Sending Init Cmd to Nodes: {}'.format(data_to_send))
+            while (1):
+                if (radio.write(data_to_send)):
+                    if (not radio.available()):
+                        print ('Sent START-NORMAL to {}'.format(node_num))
+                        break
+                    else:
+                        # possibly another pipe sent something
+                        result, pipeNo = radio.available_pipe()
+                        length = radio.getDynamicPayloadSize()
+                        received = radio.read(length)
+                        print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                        break
+
+
+# Initialization of nodes
+
+if (role == "node"):
+    print "Waiting for START-NORMALß"
+    while (1):
+        if (radio.available()):
+            counter = counter + 1
+            result, pipeNo = radio.available_pipe()
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            radio.stopListening()
+            print('{}: {}'.format(counter, received.decode('utf-8')))
+            if (received.decode('utf-8') == "START-NORMAL"):
+                break
+
+
+
+
 
 # sending of controller
 while 1:

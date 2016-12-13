@@ -74,7 +74,7 @@ def sendString(data_to_send):
     hash_orig = hashlib.md5()
     hash_orig.update(data_to_send)
     print ('{}'.format(str(hash_orig.hexdigest()))
-    print ('{}'.format(len(str(hash_orig.hexdigest())))
+    print ('{}'.format(len(str(hash_orig.hexdigest()))))
     packet_list = parsePacket(data_to_send)
     print ('{}'.format(packet_list))
     for i in range(len(packet_list)):

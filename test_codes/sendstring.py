@@ -63,7 +63,7 @@ def sendString(data_to_send):
             Send string, will detect length of string and send this first. 
             Will also send md5 representation to ensure that the whole string sent was complete :))))
             (16 bytes only for 32 byte string!)
-            Will signal end by sending "END-SEND
+            Will signal end by sending END-SEND
         Inputs:
             Data_to_send: string
             Addr: address to send to
@@ -183,8 +183,8 @@ def recvString():
             Length of anticipated string
             md5 of anticipated string (16 bytes only for 32 byte string!)
         Return Values:
-            Return string if properly received, if not, return “Error Recv”
-    """
+            Return string if properly received, if not, return Error Recv
+    ""
     # Waiting for SEND-STRING command
     counter = 0
     print ('Waiting for SEND-STRING')

@@ -102,15 +102,11 @@ if (role == "controller"):
             print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
     else:
         # no ack received or error
-        result, pipeNo = radio.available_pipe()
-        length = radio.getDynamicPayloadSize()
-        received = radio.read(length)
-        print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
         print('Did not find node 1')
         found_nodes[0] = 0
         radio.closeReadingPipe(0)
 
-
+    sleep(2)
     # test node 2
     radio.openWritingPipe(addr_central_wr[1])
     radio.flush_tx()
@@ -130,10 +126,6 @@ if (role == "controller"):
             print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
     else:
         # no ack received or error 
-        result, pipeNo = radio.available_pipe()
-        length = radio.getDynamicPayloadSize()
-        received = radio.read(length)
-        print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
         print('Did not find node 2')
         found_nodes[1] = 0
         radio.closeReadingPipe(1)

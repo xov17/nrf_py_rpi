@@ -153,11 +153,9 @@ if (role == "node"):
     print ('Waiting for START-NORMAL')
     while (1):
         if (radio.available()):
-            counter = counter + 1
             result, pipeNo = radio.available_pipe()
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
-            radio.stopListening()
             print('{}: {}'.format(counter, received.decode('utf-8')))
             if (received.decode('utf-8') == "START-NORMAL"):
                 break

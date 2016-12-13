@@ -463,8 +463,7 @@ while 1:
         elif (counter%2 == 0) and (found_nodes[1] == 1):
             radio.openWritingPipe(addr_central_wr[1])
 
-            data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why"
-            print('Now sending to Node 2: {}'.format(data_to_send))
+            data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind.'
             
             if (sendString(data_to_send)):
                 print('Sent string!')

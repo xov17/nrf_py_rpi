@@ -107,6 +107,7 @@ def sendString(data_to_send):
                 return 0
                 break
 
+
     # Sending hash with retry til sent
     hash_to_send = str(hash_orig.hexdigest())
     print('Sending hash: {}'.format(hash_to_send))
@@ -172,6 +173,8 @@ def sendString(data_to_send):
                 print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
                 return 0
                 break
+
+    radio.flush_tx()
     return 1
 
 

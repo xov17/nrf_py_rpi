@@ -426,9 +426,7 @@ if (role == "node"):
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
             print('{}: {}'.format(counter, received.decode('utf-8')))
-            ack_payload = str(counter) + ": got it"
-            print('ack_payload: {}'.format(ack_payload))
-            radio.writeAckPayload(pipeNo, ack_payload)
+        
             if (received.decode('utf-8') == "START-NORMAL"):
                 break
             radio.startListening()

@@ -24,10 +24,10 @@ radioNumber = 0
 #radioNumber = 1
 
 # The write addresses of the peripheral nodes
-addr_central_rd = [0xF0F0F0F0C1, 0xF0F0F0F0D1]
+addr_central_rd = [0xF0F0F0F011, 0xF0F0F0F0FF]
 
 # The read addresses of the peripheral nodes
-addr_central_wr = [0xF0F0F0F0AB, 0xF0F0F0F0BC]
+addr_central_wr = [0xF0F0F0F0DD, 0xF0F0F0F0EE]
 
 
 inp_role = 'none'

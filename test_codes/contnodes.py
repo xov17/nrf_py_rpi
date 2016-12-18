@@ -546,20 +546,22 @@ while 1:
         # Now send requested data
         if (response == "REQ-DATA"):
             print ("RECEIVED REQ-DATA")
-            if (inp_role == 1):
+            if (inp_role == '1'):
                 data_to_send = "Someday we'll know, why I wasn't made for you"
                 print('Now sending to controller: {}'.format(data_to_send))
                 if (sendString(data_to_send)):
                     print('Sent string!')
                 else:
                     print ('Did not send string')
-            elif (inp_role ==2):
+            elif (inp_role =='2'):
                 data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
                 print('Now sending to controller: {}'.format(data_to_send))
                 if (sendString(data_to_send)):
                     print('Sent string!')
                 else:
                     print ('Did not send string')
+            else:
+                print ("Invalid inp_role")
         else:
             print ('Else: Received on Node: {}'.format(response))
         radio.startListening()

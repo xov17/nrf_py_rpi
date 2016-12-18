@@ -386,7 +386,7 @@ if (role == "controller"):
         found_nodes[0] = 0
         radio.closeReadingPipe(0)
 
-
+    time.sleep(2)
     # test node 2
     radio.openWritingPipe(addr_central_wr[1])
     time.sleep(1)

@@ -355,7 +355,9 @@ if (role == "controller"):
     print('Finding Node 1 w/ msg: {}'.format(data_to_send))
 
     # Writing with auto-acks received
-    if (radio.write(data_to_send)):
+    radio.write(data_to_send)
+    if (txStandBy(1000)):
+    #if (radio.write(data_to_send)):
         if (not radio.isAckPayloadAvailable()):
             print ('Node 1 confirmed')
             found_nodes[0] = 1
@@ -381,7 +383,9 @@ if (role == "controller"):
     data_to_send = "Node 2 found by controller"
     print('Finding Node 2 w/ msg: {}'.format(data_to_send))
     # Writing with auto-acks received
-    if (radio.write(data_to_send)):
+    radio.write(data_to_send)
+    if (txStandby(1000)):
+    #if (radio.write(data_to_send)):
         if (not radio.isAckPayloadAvailable()):
             print ('Node 2 confirmed')
             found_nodes[1] = 1

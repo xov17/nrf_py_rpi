@@ -323,10 +323,7 @@ if (inp_role == '0'):
     # radio.openWritingPipe(addr_central_wr[0])
     radio.openReadingPipe(1, addr_central_rd[0])
     radio.openReadingPipe(2, addr_central_rd[1])
-    # set up camera
-    camera = PiCamera()
-    rawCapture = PiRGBArray(camera)
-
+   
     time.sleep(1)
     # TODO: can insert up to 5 readng pipes
     role = "controller"
@@ -337,6 +334,10 @@ elif (inp_role == '1'):
     print('Role: node1 to be accessed, awaiting transmission')
     radio.openWritingPipe(addr_central_rd[0])
     radio.openReadingPipe(1, addr_central_wr[0])
+     # set up camera
+    camera = PiCamera()
+    rawCapture = PiRGBArray(camera)
+
     time.sleep(1)
     role = "node"
     counter = 0

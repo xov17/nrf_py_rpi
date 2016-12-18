@@ -396,9 +396,10 @@ if (role == "controller"):
             found_nodes[0] = 0
             counter = coutner + 1
             
-
-    radio.closeReadingPipe(1)
-    time.sleep(2)
+    if (found_nodes[1] == 0):
+        radio.closeReadingPipe(1)
+  
+    #time.sleep(2)
     # test node 2
     radio.openWritingPipe(addr_central_wr[1])
     time.sleep(1)
@@ -440,8 +441,9 @@ if (role == "controller"):
             print('Did not find node 2')
             found_nodes[1] = 0
             counter = counter + 1
-            
-    radio.closeReadingPipe(2)
+    
+    if (found_nodes[1] == 0):
+        radio.closeReadingPipe(2)
 
     # Send init messages from controller
     for node_num in range(len(found_nodes)):

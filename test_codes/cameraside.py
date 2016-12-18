@@ -10,6 +10,7 @@ import hashlib
 from RF24 import *
 import RPi.GPIO as GPIO
 import ast
+import json
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
@@ -572,14 +573,16 @@ while 1:
                 img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
-                data_to_send = np.array_str(h)
+                data_to_send = json.dumps(h.tolist())
+                #data_to_send = np.array_str(h)
                 
                 #data_to_send = str(h)
                 #test_npparr = np.fromstring(data_to_send, np.uint8)
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
                 print('Now sending to controller: {}'.format(data_to_send))
-                #print('The h: {}'.format(h))
-                test_nparr = ast.literal_eval(data_to_send)
+                print('The h: {}'.format(h))
+                #test_nparr = ast.literal_eval(data_to_send)
+                test_nparr = numpy.array(json.loads(data_to_send))
                 print('Array ver: {} {}'.format(test_npparr, len(test_npparr)))
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
                 

@@ -532,7 +532,6 @@ while 1:
                 radio.startListening()
                 response = recvString()
                 print ('Reponse: {}'.format(response))
-                )
             else:
                 print ('Did not send string')
                

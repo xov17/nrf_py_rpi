@@ -39,6 +39,7 @@ inp_role = 'none'
 
 timeout = 5
 
+np.set_printoptions(threshold=np.inf)
 
 
 def parsePacket(data_to_send):

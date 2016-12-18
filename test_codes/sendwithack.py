@@ -384,7 +384,7 @@ if (role == "controller"):
     print('Finding Node 2 w/ msg: {}'.format(data_to_send))
     # Writing with auto-acks received
     radio.write(data_to_send)
-    if (radio.txStandby(1000)):
+    if (radio.txStandBy(1000)):
     #if (radio.write(data_to_send)):
         if (not radio.isAckPayloadAvailable()):
             print ('Node 2 confirmed')

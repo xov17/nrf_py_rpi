@@ -356,7 +356,7 @@ if (role == "controller"):
 
     # Writing with auto-acks received
     radio.write(data_to_send)
-    if (radio.txStandBy(1000)):
+    if (radio.txStandBy(2000)):
     #if (radio.write(data_to_send)):
         if (radio.available()):
             length = radio.getDynamicPayloadSize()
@@ -393,7 +393,7 @@ if (role == "controller"):
     print('Finding Node 2 w/ msg: {}'.format(data_to_send))
     # Writing with auto-acks received
     radio.write(data_to_send)
-    if (radio.txStandBy(1000)):
+    if (radio.txStandBy(2000)):
     #if (radio.write(data_to_send)):
         if (radio.available()):
             length = radio.getDynamicPayloadSize()

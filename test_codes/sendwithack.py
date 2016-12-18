@@ -442,11 +442,11 @@ ack_start = 0
 if (role == "node"):
     print ('Waiting for START-NORMAL')
     ack_payload = "1st Ack Payload from " + str(inp_role)
-    radio.writeAckPayLoad(0, ack_payload)
+    radio.writeAckPayload(0, ack_payload)
     while (1):
         if (ack_start == 1):
             ack_payload = "2nd Ack Payload from " + str(inp_role)
-            radio.writeAckPayLoad(0, ack_payload)
+            radio.writeAckPayload(0, ack_payload)
             ack_start = 0
         if (radio.available()):
             result, pipeNo = radio.available_pipe()

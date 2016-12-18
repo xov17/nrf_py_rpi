@@ -349,6 +349,7 @@ if (role == "controller"):
     # test node 1
     radio.openWritingPipe(addr_central_wr[0])
     radio.flush_tx()
+    time.sleep(1)
     #radio.openReadingPipe(0, addr_central_rd[0])
     data_to_send = "Node 1 found by controller"
     print('Finding Node 1 w/ msg: {}'.format(data_to_send))
@@ -375,6 +376,7 @@ if (role == "controller"):
     # test node 2
     radio.openWritingPipe(addr_central_wr[1])
     radio.flush_tx()
+    time.sleep(1)
     #radio.openReadingPipe(1, addr_central_rd[1])
     data_to_send = "Node 2 found by controller"
     print('Finding Node 2 w/ msg: {}'.format(data_to_send))
@@ -448,7 +450,7 @@ while 1:
         if (counter%2 == 1) and (found_nodes[0] == 1):
             
             radio.openWritingPipe(addr_central_wr[0])
-
+            time.sleep(1)
             data_to_send = "Someday we'll know, why I wasn't made for you"
             print('Now sending to Node 1: {}'.format(data_to_send))
 
@@ -462,7 +464,7 @@ while 1:
         # ping to node 2
         elif (counter%2 == 0) and (found_nodes[1] == 1):
             radio.openWritingPipe(addr_central_wr[1])
-
+            time.sleep(1)
             data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
             
             if (sendString(data_to_send)):

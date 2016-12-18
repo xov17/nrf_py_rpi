@@ -546,6 +546,7 @@ while 1:
         # Now send requested data
         if (response == "REQ-DATA"):
             print ("RECEIVED REQ-DATA")
+            time.sleep(1)
             if (inp_role == '1'):
                 data_to_send = "Someday we'll know, why I wasn't made for you"
                 print('Now sending to controller: {}'.format(data_to_send))

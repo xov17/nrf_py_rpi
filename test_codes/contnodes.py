@@ -290,7 +290,7 @@ def recvString():
     hash_joined_str = str(hash_joined.hexdigest())
     if (hash_joined_str == hash_received):
         print ('match!')
-        return received_string
+        return hash_joined_str
     else:
         return "ERROR_RECV: Wrong hash match"
 

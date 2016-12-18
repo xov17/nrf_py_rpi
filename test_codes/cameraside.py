@@ -571,7 +571,8 @@ while 1:
                 img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
-                data_to_send = str(h)
+                data_to_send = np.array_str(h)
+                #data_to_send = str(h)
                 test_npparr = np.fromstring(data_to_send, np.uint8)
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
                 print('Now sending to controller: {}'.format(data_to_send))

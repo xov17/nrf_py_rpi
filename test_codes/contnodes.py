@@ -547,9 +547,9 @@ while 1:
         if (response == "REQ-DATA"):
             print ("RECEIVED REQ-DATA")
             radio.stopListening()
-          
+            time.sleep(5)
             if (inp_role == '1'):
-               time.sleep(5)
+               
                 data_to_send = "Someday we'll know, why I wasn't made for you"
                 print('Now sending to controller: {}'.format(data_to_send))
                 if (sendString(data_to_send)):

@@ -576,6 +576,7 @@ while 1:
                 test_npparr = np.fromstring(data_to_send, np.uint8)
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
                 print('Now sending to controller: {}'.format(data_to_send))
+                print('The h: {}'.format(h))
                 print('Array ver: {} {}'.format(test_npparr, len(test_npparr)))
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
                 

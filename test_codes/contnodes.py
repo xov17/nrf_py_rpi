@@ -396,7 +396,7 @@ if (role == "controller"):
             found_nodes[0] = 0
             counter = coutner + 1
             
-    if (found_nodes[1] == 0):
+    if (found_nodes[0] == 0):
         radio.closeReadingPipe(1)
   
     #time.sleep(2)

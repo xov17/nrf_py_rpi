@@ -274,7 +274,7 @@ def recvString():
                 print ('Got END-SEND')
                 break
             else:
-                print ()"Appending to packet list")
+                print ("Appending to packet list")
                 packet_list.append(received_string)
             counter = counter + 1
             radio.startListening()

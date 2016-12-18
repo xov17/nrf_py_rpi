@@ -311,8 +311,8 @@ while (inp_role !='0') and (inp_role !='1') and (inp_role !='2'):
 if (inp_role == '0'):
     print('Role: Controller, starting transmission')
     # radio.openWritingPipe(addr_central_wr[0])
-    radio.openReadingPipe(0, addr_central_rd[0])
-    radio.openReadingPipe(1, addr_central_rd[1])
+    radio.openReadingPipe(1, addr_central_rd[0])
+    radio.openReadingPipe(2, addr_central_rd[1])
     time.sleep(1)
     # TODO: can insert up to 5 readng pipes
     role = "controller"
@@ -322,14 +322,14 @@ if (inp_role == '0'):
 elif (inp_role == '1'):
     print('Role: node1 to be accessed, awaiting transmission')
     radio.openWritingPipe(addr_central_rd[0])
-    radio.openReadingPipe(0, addr_central_wr[0])
+    radio.openReadingPipe(1, addr_central_wr[0])
     time.sleep(1)
     role = "node"
     counter = 0
 elif (inp_role == '2'):
     print('Role: node2 to be accessed, awaiting transmission')
     radio.openWritingPipe(addr_central_rd[1])
-    radio.openReadingPipe(0,addr_central_wr[1])
+    radio.openReadingPipe(1,addr_central_wr[1])
     time.sleep(1)
     role = "node"
     counter = 0
@@ -446,7 +446,7 @@ if (role == "controller"):
         if found_nodes[node_num]:
             radio.openWritingPipe(addr_central_wr[node_num])
             time.sleep(1) 
-            radio.flush_tx()
+            #radio.flush_tx()
             time.sleep(2)
             data_to_send = "START-NORMAL"
             print('Sending Init Cmd to Nodes: {}'.format(data_to_send))
@@ -470,7 +470,7 @@ ack_start = 0
 if (role == "node"):
     print ('Waiting for START-NORMAL')
     ack_payload = "1st Ack Payload from " + str(inp_role)
-    radio.writeAckPayload(0, ack_payload)
+    radio.writeAckPayload(1, ack_payload)
     while (1):
         if (ack_start == 1):
             ack_payload = "2nd Ack Payload from " + str(inp_role)

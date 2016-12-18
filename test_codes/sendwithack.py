@@ -378,9 +378,9 @@ if (role == "controller"):
             #length = radio.getDynamicPayloadSize()
             #received = radio.read(length)
             #print('Error from pipe #{}: {}'.format(pipeNo, #received.decode('utf-8')))
-            length = radio.getDynamicPayloadSize()
-            received = radio.read(length)
-            print('{}: {}'.format("AP:", received.decode('utf-8')))
+            #length = radio.getDynamicPayloadSize()
+            #received = radio.read(length)
+            #print('{}: {}'.format("AP:", received.decode('utf-8')))
             print('Did not find node 1')
             found_nodes[0] = 0
             radio.closeReadingPipe(0)
@@ -414,10 +414,10 @@ if (role == "controller"):
         #    found_nodes[1] = 1
         else:
             # possibly another pipe sent something
-            result, pipeNo = radio.available_pipe()
-            length = radio.getDynamicPayloadSize()
-            received = radio.read(length)
-            print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+            #result, pipeNo = radio.available_pipe()
+            #length = radio.getDynamicPayloadSize()
+            #received = radio.read(length)
+            #print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
             print('Did not find node 2')
             found_nodes[1] = 0
             radio.closeReadingPipe(1)

@@ -271,8 +271,10 @@ def recvString():
             print('{}: {}'.format(counter, received_string))
 
             if (received_string == "END-SEND"):
+                print ('Got END-SEND')
                 break
             else:
+                print ()"Appending to packet list")
                 packet_list.append(received_string)
             counter = counter + 1
             radio.startListening()
@@ -543,6 +545,7 @@ while 1:
 
         # Now send requested data
         if (response == "REQ-DATA"):
+            print ("RECEIVED REQ-DATA")
             if (inp_role == 1):
                 data_to_send = "Someday we'll know, why I wasn't made for you"
                 print('Now sending to controller: {}'.format(data_to_send))

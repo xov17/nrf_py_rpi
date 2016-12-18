@@ -445,9 +445,9 @@ if (role == "controller"):
     for node_num in range(len(found_nodes)):
         if found_nodes[node_num]:
             radio.openWritingPipe(addr_central_wr[node_num])
-            time.sleep(1) 
+            #time.sleep(1) 
             #radio.flush_tx()
-            time.sleep(2)
+            #time.sleep(2)
             data_to_send = "START-NORMAL"
             print('Sending Init Cmd to Nodes: {}'.format(data_to_send))
             while (1):
@@ -503,7 +503,7 @@ while 1:
         if (counter%2 == 1) and (found_nodes[0] == 1):
             
             radio.openWritingPipe(addr_central_wr[0])
-            time.sleep(1)
+            #time.sleep(1)
             data_to_send = "Someday we'll know, why I wasn't made for you"
             print('Now sending to Node 1: {}'.format(data_to_send))
 
@@ -517,7 +517,7 @@ while 1:
         # ping to node 2
         elif (counter%2 == 0) and (found_nodes[1] == 1):
             radio.openWritingPipe(addr_central_wr[1])
-            time.sleep(1)
+            #time.sleep(1)
             data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
             
             if (sendString(data_to_send)):

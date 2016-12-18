@@ -313,6 +313,7 @@ if (inp_role == '0'):
     # radio.openWritingPipe(addr_central_wr[0])
     radio.openReadingPipe(0, addr_central_rd[0])
     radio.openReadingPipe(1, addr_central_rd[1])
+    time.sleep(1)
     # TODO: can insert up to 5 readng pipes
     role = "controller"
 
@@ -322,12 +323,14 @@ elif (inp_role == '1'):
     print('Role: node1 to be accessed, awaiting transmission')
     radio.openWritingPipe(addr_central_rd[0])
     radio.openReadingPipe(0, addr_central_wr[0])
+    time.sleep(1)
     role = "node"
     counter = 0
 elif (inp_role == '2'):
     print('Role: node2 to be accessed, awaiting transmission')
     radio.openWritingPipe(addr_central_rd[1])
     radio.openReadingPipe(0,addr_central_wr[1])
+    time.sleep(1)
     role = "node"
     counter = 0
 

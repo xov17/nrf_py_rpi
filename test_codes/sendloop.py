@@ -395,7 +395,7 @@ if (role == "controller"):
             counter = coutner + 1
             
 
-    radio.closeReadingPipe(0)
+    radio.closeReadingPipe(1)
     time.sleep(2)
     # test node 2
     radio.openWritingPipe(addr_central_wr[1])
@@ -439,7 +439,7 @@ if (role == "controller"):
             found_nodes[1] = 0
             counter = counter + 1
             
-    radio.closeReadingPipe(1)
+    radio.closeReadingPipe(2)
 
     # Send init messages from controller
     for node_num in range(len(found_nodes)):
@@ -474,7 +474,7 @@ if (role == "node"):
     while (1):
         if (ack_start == 1):
             ack_payload = "2nd Ack Payload from " + str(inp_role)
-            radio.writeAckPayload(0, ack_payload)
+            radio.writeAckPayload(1, ack_payload)
             ack_start = 0
         if (radio.available()):
             result, pipeNo = radio.available_pipe()

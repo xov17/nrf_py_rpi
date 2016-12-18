@@ -430,7 +430,7 @@ if (role == "controller"):
                 print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
                 print('Did not find node 2')
                 found_nodes[1] = 0
-                counter = coutner + 1
+                counter = counter + 1
                 #radio.closeReadingPipe(1)
         else:
             # no ack received or error 

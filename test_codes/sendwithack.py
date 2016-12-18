@@ -361,6 +361,7 @@ if (role == "controller"):
     radio.write(data_to_send)
     if (radio.txStandBy(2000)):
     #if (radio.write(data_to_send)):
+        time.sleep(1)
         if (radio.available()):
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
@@ -398,6 +399,7 @@ if (role == "controller"):
     radio.write(data_to_send)
     if (radio.txStandBy(2000)):
     #if (radio.write(data_to_send)):
+        time.sleep(1)
         if (radio.available()):
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)

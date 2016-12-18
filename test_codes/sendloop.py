@@ -361,6 +361,7 @@ if (role == "controller"):
     # Writing with auto-acks received
     counter = 0
     while (counter < 3):
+        time.sleep(1)
         radio.write(data_to_send)
         if (radio.txStandBy(2000)):
         #if (radio.write(data_to_send)):
@@ -408,6 +409,7 @@ if (role == "controller"):
     counter = 0
     # Writing with auto-acks received
     while (counter < 3):
+        time.sleep(1)
         radio.write(data_to_send)
         if (radio.txStandBy(2000)):
         #if (radio.write(data_to_send)):

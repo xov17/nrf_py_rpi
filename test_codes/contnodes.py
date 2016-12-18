@@ -174,7 +174,7 @@ def sendString(data_to_send):
                 return 0
                 break
 
-    radio.flush_tx()
+    #radio.flush_tx()
     return 1
 
 
@@ -430,7 +430,7 @@ if (role == "controller"):
                 #length = radio.getDynamicPayloadSize()
                 #received = radio.read(length)
                 #print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
-                radio.flush_tx()
+                #radio.flush_tx()
                 print('Sent but Did not find node 2')
                 found_nodes[1] = 0
                 counter = counter + 1

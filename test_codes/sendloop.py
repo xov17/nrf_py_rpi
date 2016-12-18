@@ -386,7 +386,7 @@ if (role == "controller"):
                 #length = radio.getDynamicPayloadSize()
                 #received = radio.read(length)
                 #print('AP: {}: {}'.format(counter, received.decode('utf-8')))
-                print('Did not find node 1')
+                print('Sent Did not find node 1')
                 found_nodes[0] = 0
                 radio.closeReadingPipe(0)
                 counter = counter + 1
@@ -430,7 +430,7 @@ if (role == "controller"):
                 #length = radio.getDynamicPayloadSize()
                 #received = radio.read(length)
                 #print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
-                print('Did not find node 2')
+                print('Sent but Did not find node 2')
                 found_nodes[1] = 0
                 counter = counter + 1
                 #radio.closeReadingPipe(1)

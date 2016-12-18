@@ -375,8 +375,6 @@ if (role == "controller"):
                 break
             #elif (not radio.isAckPayloadAvailable()):
             #    print ('Node 1 confirmed')
-            #    found_nodes[0] = 1
-
             else:
                 # possibly another pipe sent something
                 #result, pipeNo = radio.available_pipe()
@@ -388,7 +386,7 @@ if (role == "controller"):
                 #print('AP: {}: {}'.format(counter, received.decode('utf-8')))
                 print('Sent Did not find node 1')
                 found_nodes[0] = 0
-                radio.closeReadingPipe(0)
+                #radio.closeReadingPipe(0)
                 counter = counter + 1
         else:
             # no ack received or error
@@ -430,6 +428,7 @@ if (role == "controller"):
                 #length = radio.getDynamicPayloadSize()
                 #received = radio.read(length)
                 #print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                radio.flush_tx()
                 print('Sent but Did not find node 2')
                 found_nodes[1] = 0
                 counter = counter + 1

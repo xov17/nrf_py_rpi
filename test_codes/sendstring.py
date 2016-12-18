@@ -349,8 +349,7 @@ if (role == "controller"):
     # test node 1
     radio.openWritingPipe(addr_central_wr[0])
     time.sleep(1)
-    radio.flush_tx()
-    time.sleep(2)
+
     #radio.openReadingPipe(0, addr_central_rd[0])
     data_to_send = "Node 1 found by controller"
     print('Finding Node 1 w/ msg: {}'.format(data_to_send))
@@ -377,8 +376,7 @@ if (role == "controller"):
     # test node 2
     radio.openWritingPipe(addr_central_wr[1])
     time.sleep(1)
-    radio.flush_tx()
-    time.sleep(2)
+   
     #radio.openReadingPipe(1, addr_central_rd[1])
     data_to_send = "Node 2 found by controller"
     print('Finding Node 2 w/ msg: {}'.format(data_to_send))
@@ -403,7 +401,9 @@ if (role == "controller"):
     for node_num in range(len(found_nodes)):
         if found_nodes[node_num]:
             radio.openWritingPipe(addr_central_wr[node_num])
-            time.sleep(1)
+            time.sleep(1) 
+            radio.flush_tx()
+            time.sleep(2)
             data_to_send = "START-NORMAL"
             print('Sending Init Cmd to Nodes: {}'.format(data_to_send))
             while (1):
@@ -430,8 +430,8 @@ if (role == "node"):
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
             print('{}: {}'.format(counter, received.decode('utf-8')))
-            ack_payload = str(counter) + ": got it"  
             if (received.decode('utf-8') == "START-NORMAL"):
+                print ('Received START-NORMAL')
                 break
             radio.startListening()
 

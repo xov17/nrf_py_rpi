@@ -96,7 +96,8 @@ def sendString(data_to_send):
     print('Sending SEND-STRING command: {}'.format(cmd_to_send))
     while (1):
         if (radio.write(cmd_to_send)):
-            if (not radio.available()):
+            if ()
+            elif (not radio.available()):
                 print ('Sent START-NORMAL to {}'.format(node_num))
                 break
             else:

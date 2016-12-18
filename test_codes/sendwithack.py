@@ -358,7 +358,13 @@ if (role == "controller"):
     radio.write(data_to_send)
     if (radio.txStandBy(1000)):
     #if (radio.write(data_to_send)):
-        if (not radio.isAckPayloadAvailable()):
+        if (radio.available()):
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('{}: {}'.format("AP:", received.decode('utf-8')))
+            print ('Node 1 confirmed')
+            found_nodes[0] = 1
+        elif (not radio.isAckPayloadAvailable()):
             print ('Node 1 confirmed')
             found_nodes[0] = 1
 
@@ -386,7 +392,13 @@ if (role == "controller"):
     radio.write(data_to_send)
     if (radio.txStandBy(1000)):
     #if (radio.write(data_to_send)):
-        if (not radio.isAckPayloadAvailable()):
+        if (radio.available()):
+            length = radio.getDynamicPayloadSize()
+            received = radio.read(length)
+            print('{}: {}'.format("AP:", received.decode('utf-8')))
+            print ('Node 2 confirmed')
+            found_nodes[1] = 1
+        elif (not radio.isAckPayloadAvailable()):
             print ('Node 2 confirmed')
             found_nodes[1] = 1
         else:
@@ -426,9 +438,16 @@ if (role == "controller"):
 
 # Initialization of nodes
 counter = 0
+ack_start = 0
 if (role == "node"):
     print ('Waiting for START-NORMAL')
+    ack_payload = "1st Ack Payload from " + str(inp_role)
+    writeAckPayLoad(0, ack_payload)
     while (1):
+        if (ack_start == 1):
+            ack_payload = "2nd Ack Payload from " + str(inp_role)
+            writeAckPayLoad(0, ack_payload)
+            ack_start = 0
         if (radio.available()):
             result, pipeNo = radio.available_pipe()
             length = radio.getDynamicPayloadSize()
@@ -438,6 +457,7 @@ if (role == "node"):
                 print ('Received START-NORMAL')
                 break
             radio.startListening()
+            ack_start = 1
 
 
 

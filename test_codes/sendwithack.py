@@ -364,9 +364,9 @@ if (role == "controller"):
             print('{}: {}'.format("AP:", received.decode('utf-8')))
             print ('Node 1 confirmed')
             found_nodes[0] = 1
-        elif (not radio.isAckPayloadAvailable()):
-            print ('Node 1 confirmed')
-            found_nodes[0] = 1
+        #elif (not radio.isAckPayloadAvailable()):
+        #    print ('Node 1 confirmed')
+        #    found_nodes[0] = 1
 
         else:
             # possibly another pipe sent something
@@ -398,9 +398,9 @@ if (role == "controller"):
             print('{}: {}'.format("AP:", received.decode('utf-8')))
             print ('Node 2 confirmed')
             found_nodes[1] = 1
-        elif (not radio.isAckPayloadAvailable()):
-            print ('Node 2 confirmed')
-            found_nodes[1] = 1
+        #elif (not radio.isAckPayloadAvailable()):
+        #    print ('Node 2 confirmed')
+        #    found_nodes[1] = 1
         else:
             # possibly another pipe sent something
             result, pipeNo = radio.available_pipe()

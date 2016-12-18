@@ -9,7 +9,7 @@ import time
 import hashlib
 from RF24 import *
 import RPi.GPIO as GPIO
-
+import ast
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
@@ -573,11 +573,12 @@ while 1:
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
                 data_to_send = np.array_str(h)
+                test_nparr = ast.literal_eval(data_to_send)
                 #data_to_send = str(h)
-                test_npparr = np.fromstring(data_to_send, np.uint8)
+                #test_npparr = np.fromstring(data_to_send, np.uint8)
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
                 print('Now sending to controller: {}'.format(data_to_send))
-                print('The h: {}'.format(h))
+                #print('The h: {}'.format(h))
                 print('Array ver: {} {}'.format(test_npparr, len(test_npparr)))
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
                 

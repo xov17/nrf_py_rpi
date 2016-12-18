@@ -402,8 +402,6 @@ if (role == "controller"):
         if found_nodes[node_num]:
             radio.openWritingPipe(addr_central_wr[node_num])
             time.sleep(1) 
-            radio.flush_tx()
-            time.sleep(2)
             data_to_send = "START-NORMAL"
             print('Sending Init Cmd to Nodes: {}'.format(data_to_send))
             while (1):

@@ -460,7 +460,7 @@ if (role == "controller"):
                         result, pipeNo = radio.available_pipe()
                         length = radio.getDynamicPayloadSize()
                         received = radio.read(length)
-                        print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                        print('Conf of START-NORMAL {}: {}'.format(pipeNo, received.decode('utf-8')))
                         break
 
 

@@ -551,6 +551,9 @@ while 1:
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
                 data_to_compare = json.dumps(h.tolist())
+                b = open("wcv0.txt", "r+")
+                b.write(data_to_compare)
+                b.close()
                 print ("Data_to_compare:{}".format(response))
                 if (data_to_compare == response):
                     print ("MATCH on same picture!")
@@ -601,6 +604,9 @@ while 1:
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
                 data_to_send = json.dumps(h.tolist())
+                b = open("wcv1.txt", "r+")
+                b.write(data_to_send)
+                b.close()
                 #data_to_send = np.array_str(h)
                 
                 #data_to_send = str(h)

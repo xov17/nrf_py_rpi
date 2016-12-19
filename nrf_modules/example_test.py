@@ -62,6 +62,7 @@ if (role == "node"):
 # Nodes send data to controller
 # Nodes wait again for req commands
 
+counter = 0
 # sending of controller
 while 1:
     if (role ==  "controller"):

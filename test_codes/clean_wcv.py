@@ -540,7 +540,7 @@ while 1:
                 print('Sent string!')
                 radio.startListening()
                 response = recvString()
-                if (len(response) < =32):
+                if (len(response) <= 32):
                     print('Reponse: {}'.format(response))
                 else:
                     logging.debug('Reponse: {}'.format(response))

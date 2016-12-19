@@ -566,8 +566,10 @@ while 1:
             radio.stopListening()
             time.sleep(5)
             if (inp_role == '1'):
-                camera.capture(rawCapture, format = "bgr")
-                img = rawCapture.array
+                #camera.capture(rawCapture, format = "bgr")
+                #img = rawCapture.array
+                img = cv2.imread("Lenna.png")
+                #rawCapture.truncate(0)
                 win_size = (64, 128)
                 img = cv2.resize(img, win_size)
                 img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)

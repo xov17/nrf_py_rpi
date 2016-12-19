@@ -45,7 +45,7 @@ result = 0
 # detect live nodes
 # retries 3 times 
 
-nrf_python.findNodes()
+
 if (role == "controller"):
     nrf_python.findNodes()
     nrf_python.sendStartNormal()

@@ -583,7 +583,7 @@ while 1:
                 print('The h: {}'.format(h))
                 #test_nparr = ast.literal_eval(data_to_send)
                 test_nparr = np.array(json.loads(data_to_send))
-                print('Array ver: {} {}'.format(test_npparr, len(test_npparr)))
+                print('Array ver: {} {}'.format(test_nparr, len(test_nparr)))
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
                 
                 if (sendString(data_to_send)):

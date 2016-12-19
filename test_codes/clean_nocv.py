@@ -545,8 +545,8 @@ while 1:
                 b = open("storefeatures.txt","r")
                 f = open("hogfeatures.txt", "r")
                 i = 0
-                rec_nparr = np.array(json.loads(response))
-                print('Array ver: {} {}'.format(rec_nparr, len(rec_nparr)))
+                #rec_nparr = np.array(json.loads(response))
+                #print('Array ver: {} {}'.format(rec_nparr, len(rec_nparr)))
                 for x in range(0, 3780):
                     if(b.readline()==f.readline()):
                         logging.debug("line {} is correct".format(x+1))

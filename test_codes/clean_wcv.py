@@ -551,6 +551,7 @@ while 1:
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
                 data_to_compare = json.dumps(h.tolist())
+                list_to_compare = np.array(json.loads(data_to_compare))
                 b = open("wcv0.txt", "r+")
                 b.write(data_to_compare)
                 b.close()
@@ -560,15 +561,17 @@ while 1:
                 else:
                     print("Was not a match")
                 recv_arr = np.array(json.loads(response))
+
+                
                 right = 0
                 wrong = 0
                 # Compare h & recv_arr
-                for x in range(len(h)):
-                    if (h[x] == recv_arr[x]):
+                for x in range(len(data_to_compare)):
+                    if (data_to_compare[x] == recv_arr[x]):
                         right = right + 1
                     else:
                         wrong = wrong + 1
-                        print ("Wrong on: \nh[x]: {}\nrecv_arr[x]: {}\n".format(h[x], recv_arr[x]))
+                        print ("Wrong on: \ndata_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, data_to_compare[x], x, recv_arr[x]))
                 
                 print ("Errors: {}".format(wrong))
                 accuracy = (right/len(h))*100

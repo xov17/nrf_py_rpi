@@ -535,6 +535,8 @@ while 1:
                 radio.startListening()
                 response = recvString()
                 print ('Reponse: {}'.format(response))
+                rec_nparr = np.array(json.loads(data_to_send))
+                print('Array ver: {} {}'.format(re_nparr, len(rec_nparr)))
             else:
                 print ('Did not send string')
 
@@ -551,8 +553,7 @@ while 1:
                 radio.startListening()
                 response = recvString()
                 print ('Reponse: {}'.format(response))
-                rec_nparr = np.array(json.loads(data_to_send))
-                print('Array ver: {} {}'.format(re_nparr, len(rec_nparr)))
+                
             else:
                 print ('Did not send string')
                

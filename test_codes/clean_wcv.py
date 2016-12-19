@@ -573,9 +573,10 @@ while 1:
                     temp_recv = temp_recv[0:3]
                     if (temp_recv == temp_comp):
                         right = right + 1
+                        logging.debug("Right on: \nlist_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, list_to_compare[x], x, recv_arr[x]))
                     else:
                         wrong = wrong + 1
-                        print ("Wrong on: \nlist_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, list_to_compare[x], x, recv_arr[x]))
+                        logging.debug("Wrong on: \nlist_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, list_to_compare[x], x, recv_arr[x]))
                 
                 print ("Errors: {}".format(wrong))
                 accuracy = (right/len(h))*100

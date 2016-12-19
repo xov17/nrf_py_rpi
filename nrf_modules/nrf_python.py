@@ -36,6 +36,8 @@ found_nodes = [0, 0, 0 ,0 ,0 ,0]
 
 radio = RF24(17, 0)
 
+camera = 'none'
+rawCapter = 'none'
 
 def parsePacket(data_to_send):
     """
@@ -306,6 +308,7 @@ def recvString():
         return "ERROR_RECV: Wrong hash match"
 
 def config():
+    global radio
     # Radio Number: GPIO number, SPI bus 0 or 1
     radio.begin()
     radio.enableAckPayload()
@@ -323,6 +326,8 @@ def userDefineRoles():
         Return:
             Tuple: (inp_role, role)
     """
+    global inp_role, radio, camera, rawCapture
+
     print(' ************ Role Setup *********** ')
     while (inp_role !='0') and (inp_role !='1') and (inp_role !='2'):
         inp_role = str(input('Choose a role: Enter 0 for controller, 1 for node1, 2 for node2 CTRL+C to exit) '))
@@ -371,6 +376,7 @@ def findNodes():
         Others:
             Can be extended to find 5 nodes by copy-pasting
     """
+    global radio, addr_central_rd, addr_central_wr
     radio.stopListening()
 
     # test node 1
@@ -446,6 +452,7 @@ def sendStartNormal():
             Sends "START-NORMAL" to the peripheral nodes for normal operation.
             Call after using findNodes()
     """
+    global found_nodes, radio, addr_central_rd, addr_central_wr
     for node_num in range(len(found_nodes)):
         if found_nodes[node_num]:
             radio.openWritingPipe(addr_central_wr[node_num])
@@ -472,6 +479,7 @@ def waitStartNormal():
         Description: 
             Used to wait for "START-NORMAL" from sendStartNormal()
     """
+    global radio
     counter = 0
     ack_start = 0
     print ('Waiting for START-NORMAL')

@@ -26,8 +26,6 @@ import cv2
 import numpy as np
 
 
-inp_role = 0
-role = 0
 
 
 np.set_printoptions(threshold=np.inf)

@@ -540,7 +540,7 @@ while 1:
                 response = recvString()
                 print ('Reponse: {}'.format(response))
                 b = open("storefeatures.txt", "r+")
-                b.write(s)
+                b.write(response)
                 b.close()
                 b = open("storefeatures.txt","r")
                 f = open("hogfeatures.txt", "r")

@@ -571,7 +571,7 @@ while 1:
                     temp_comp = temp_comp[0:3]
                     temp_recv = str(recv_arr[x])
                     temp_recv = temp_recv[0:3]
-                    if (temp_recv[x] == temp_comp[x]):
+                    if (temp_recv == temp_comp):
                         right = right + 1
                     else:
                         wrong = wrong + 1

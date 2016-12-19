@@ -21,7 +21,7 @@ import numpy as np
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.CRITICAL,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
 np.set_printoptions(threshold=np.inf)
@@ -517,7 +517,7 @@ if (role == "node"):
 # Controller sends REQ commands to nodes
 # Nodes send data to controller
 # Nodes wait again for req commands
-
+counter = 0
 # sending of controller
 while 1:
     if (role ==  "controller"):
@@ -585,7 +585,8 @@ while 1:
                 #print "Accuracy: ", float(((3780-i)/3780)*100), " percent"
             else:
                 print ('Did not send string')
-
+            print ("{}: Node 1 is done!".format(counter))
+            time.sleep(3)
 
         # ping to node 2 JUST RECEIVES DATA
         elif (counter%2 == 0) and (found_nodes[1] == 1):
@@ -602,8 +603,8 @@ while 1:
                 
             else:
                 print ('Did not send string')
-               
-
+            print ("{}: Node 2 is done!".format(counter))
+            time.sleep(3)
 
     elif (role == "node"):
 
@@ -644,6 +645,8 @@ while 1:
                     print('Sent string!')
                 else:
                     print ('Did not send string')
+                print ("Node 1 is done!")
+                time.sleep(3)
             elif (inp_role =='2'):
                 data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
                 print('Now sending to controller: {}'.format(data_to_send))

@@ -3,39 +3,51 @@
 #
 # Central node alternately sends data to 2 different nodes
 #
+
 from __future__ import print_function
 import time
+import hashlib
 from RF24 import *
 import RPi.GPIO as GPIO
 import ast
 import json
-import hashlib
 
 import logging
 
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+#import time
+import cv2
+import numpy as np
+
+from nrf_python import *
 
 irq_gpio_pin = None
 
+# Radio Number: GPIO number, SPI bus 0 or 1
+#radio = RF24(17, 0)
+
+# Unique Identifier for this Node
+# Controller/Node0 = 0
+radioNumber = 0
+# Node1 = 1
+#radioNumber = 1
 
 # The write addresses of the peripheral nodes
-addr_central_rd = [0xF0F0F0F0C1, 0xF0F0F0F0D1, 0xF0F0F0F0E1, 0xF0F0F0F0F1, 0xF0F0F0F0A1]
+addr_central_rd = [0xF0F0F0F0C1, 0xF0F0F0F0D1]
 
 # The read addresses of the peripheral nodes
-addr_central_wr = [0xF0F0F0F0AB, 0xF0F0F0F0BC, 0xF0F0F0F0DE, 0xF0F0F0F0FA, 0xF0F0F0F0BA]
+addr_central_wr = [0xF0F0F0F0AB, 0xF0F0F0F0BC]
 
-# Not using inp for now
+
 inp_role = 'none'
 
-#Timeout in seconds for the controller to receive msg from node
 timeout = 5
 
-# to accomodate for the 5 reading pipes/nodes, not including the first one
-found_nodes = [0, 0, 0 ,0 ,0 ,0]
-
-radio = RF24(17, 0)
+np.set_printoptions(threshold=np.inf)
 
 
 def parsePacket(data_to_send):
@@ -62,7 +74,6 @@ def parsePacket(data_to_send):
 
     return packet_list
 
-
 def sendString(data_to_send):
     """
         Description:
@@ -70,10 +81,6 @@ def sendString(data_to_send):
             Will also send md5 representation to ensure that the whole string sent was complete :))))
             (16 bytes only for 32 byte string!)
             Will signal end by sending END-SEND
-        Pre-reqs:
-            Open radio
-            Defined writing and reading pipes
-            radio.stopListening()
         Inputs:
             Data_to_send: string
             Addr: address to send to
@@ -187,16 +194,14 @@ def sendString(data_to_send):
     #radio.flush_tx()
     return 1
 
+
+
 def recvString():
     """
         Description:
             Will receive string based on anticipated length
             Will compile string
             Tiwala muna na di kailangan ng ordering haha
-        Pre-reqs:
-            Start radio
-            Defined reading and writing pipes
-            radio.startListening()
         Inputs:
             Address to read from
             Length of anticipated string
@@ -306,72 +311,67 @@ def recvString():
     else:
         return "ERROR_RECV: Wrong hash match"
 
-def config():
-    # Radio Number: GPIO number, SPI bus 0 or 1
-    radio.begin()
-    radio.enableAckPayload()
-    radio.setAutoAck(True)
-    radio.enableDynamicPayloads()
-    radio.setRetries(5,15)
-    radio.printDetails()
-
-
-def userDefineRoles():
-    """
-        Description:
-            CLI based user input roles
-            Can be extended to 5 peripheral nodes by copy-pasting
-        Return:
-            Tuple: (inp_role, role)
-    """
-    print(' ************ Role Setup *********** ')
-    while (inp_role !='0') and (inp_role !='1') and (inp_role !='2'):
-        inp_role = str(input('Choose a role: Enter 0 for controller, 1 for node1, 2 for node2 CTRL+C to exit) '))
 
 
 
-    if (inp_role == '0'):
-        print('Role: Controller, starting transmission')
-        # radio.openWritingPipe(addr_central_wr[0])
-        radio.openReadingPipe(1, addr_central_rd[0])
-        radio.openReadingPipe(2, addr_central_rd[1])
-    
-        time.sleep(1)
-        # TODO: can insert up to 5 readng pipes
-        role = "controller"
+radio.begin()
+radio.enableAckPayload()
+radio.setAutoAck(True)
+radio.enableDynamicPayloads()
+radio.setRetries(5,15)
+radio.printDetails()
 
-        counter = 0
+print(' ************ Role Setup *********** ')
+while (inp_role !='0') and (inp_role !='1') and (inp_role !='2'):
+    inp_role = str(input('Choose a role: Enter 0 for controller, 1 for node1, 2 for node2 CTRL+C to exit) '))
 
-    elif (inp_role == '1'):
-        # HAS OPENCV
-        print('Role: node1 to be accessed, awaiting transmission')
-        radio.openWritingPipe(addr_central_rd[0])
-        radio.openReadingPipe(1, addr_central_wr[0])
-        # set up camera
-        camera = PiCamera()
-        rawCapture = PiRGBArray(camera)
 
-        time.sleep(1)
-        role = "node"
-        counter = 0
-    elif (inp_role == '2'):
-        print('Role: node2 to be accessed, awaiting transmission')
-        radio.openWritingPipe(addr_central_rd[1])
-        radio.openReadingPipe(1,addr_central_wr[1])
-        time.sleep(1)
-        role = "node"
-        counter = 0
 
-    radio.startListening()
-    return (inp_role, role)
+if (inp_role == '0'):
+    print('Role: Controller, starting transmission')
+    # radio.openWritingPipe(addr_central_wr[0])
+    radio.openReadingPipe(1, addr_central_rd[0])
+    radio.openReadingPipe(2, addr_central_rd[1])
+   
+    time.sleep(1)
+    # TODO: can insert up to 5 readng pipes
+    role = "controller"
 
-def findNodes():
-    """
-        Assumption: 
-            Controller is the one calling this function
-        Others:
-            Can be extended to find 5 nodes by copy-pasting
-    """
+    counter = 0
+
+elif (inp_role == '1'):
+    print('Role: node1 to be accessed, awaiting transmission')
+    radio.openWritingPipe(addr_central_rd[0])
+    radio.openReadingPipe(1, addr_central_wr[0])
+     # set up camera
+    camera = PiCamera()
+    rawCapture = PiRGBArray(camera)
+
+    time.sleep(1)
+    role = "node"
+    counter = 0
+elif (inp_role == '2'):
+    print('Role: node2 to be accessed, awaiting transmission')
+    radio.openWritingPipe(addr_central_rd[1])
+    radio.openReadingPipe(1,addr_central_wr[1])
+    time.sleep(1)
+    role = "node"
+    counter = 0
+
+radio.startListening()
+
+got_msg = 0
+startNormalOperation = 0
+
+pipeNo = 0
+result = 0
+# to accomodate for the 6 reading pipes/nodes
+found_nodes = [0, 0, 0 ,0 ,0 ,0]
+
+# detect live nodes
+# retries 3 times 
+if (role == "controller"):
+
     radio.stopListening()
 
     # test node 1
@@ -384,8 +384,6 @@ def findNodes():
 
     # Writing with auto-acks received
     counter = 0
-    
-    # Finding Node 1
     while (counter < 3):
         time.sleep(1)
         radio.write(data_to_send)
@@ -398,21 +396,36 @@ def findNodes():
                 print ('Node 1 confirmed')
                 found_nodes[0] = 1
                 break
+            #elif (not radio.isAckPayloadAvailable()):
+            #    print ('Node 1 confirmed')
             else:
+                # possibly another pipe sent something
+                #result, pipeNo = radio.available_pipe()
+                #length = radio.getDynamicPayloadSize()
+                #received = radio.read(length)
+                #print('Error from pipe #{}: {}'.format(pipeNo, #received.decode('utf-8')))
+                #length = radio.getDynamicPayloadSize()
+                #received = radio.read(length)
+                #print('AP: {}: {}'.format(counter, received.decode('utf-8')))
                 print('Sent Did not find node 1')
                 found_nodes[0] = 0
+                #radio.closeReadingPipe(0)
                 counter = counter + 1
         else:
+            # no ack received or error
             print('Did not find node 1')
             found_nodes[0] = 0
             counter = coutner + 1
+            
     if (found_nodes[0] == 0):
         radio.closeReadingPipe(1)
-
-    
-    # Find Node 2
+  
+    #time.sleep(2)
+    # test node 2
     radio.openWritingPipe(addr_central_wr[1])
     time.sleep(1)
+   
+    #radio.openReadingPipe(1, addr_central_rd[1])
     data_to_send = "Node 2 found by controller"
     print('Finding Node 2 w/ msg: {}'.format(data_to_send))
     counter = 0
@@ -421,6 +434,7 @@ def findNodes():
         time.sleep(1)
         radio.write(data_to_send)
         if (radio.txStandBy(2000)):
+        #if (radio.write(data_to_send)):
             if (radio.available()):
                 length = radio.getDynamicPayloadSize()
                 received = radio.read(length)
@@ -428,10 +442,20 @@ def findNodes():
                 print ('Node 2 confirmed')
                 found_nodes[1] = 1
                 break
+            #elif (not radio.isAckPayloadAvailable()):
+            #    print ('Node 2 confirmed')
+            #    found_nodes[1] = 1
             else:
+                # possibly another pipe sent something
+                #result, pipeNo = radio.available_pipe()
+                #length = radio.getDynamicPayloadSize()
+                #received = radio.read(length)
+                #print('Error from pipe #{}: {}'.format(pipeNo, received.decode('utf-8')))
+                #radio.flush_tx()
                 print('Sent but Did not find node 2')
                 found_nodes[1] = 0
                 counter = counter + 1
+                #radio.closeReadingPipe(1)
         else:
             # no ack received or error 
             print('Did not find node 2')
@@ -441,16 +465,13 @@ def findNodes():
     if (found_nodes[1] == 0):
         radio.closeReadingPipe(2)
 
-def sendStartNormal():
-    """
-        Description:
-            Sends "START-NORMAL" to the peripheral nodes for normal operation.
-            Call after using findNodes()
-    """
+    # Send init messages from controller
     for node_num in range(len(found_nodes)):
         if found_nodes[node_num]:
             radio.openWritingPipe(addr_central_wr[node_num])
-            time.sleep(2) 
+            #time.sleep(1) 
+            #radio.flush_tx()
+            #time.sleep(2)
             data_to_send = "START-NORMAL"
             print('Sending Init Cmd to Nodes: {}'.format(data_to_send))
             while (1):
@@ -465,15 +486,12 @@ def sendStartNormal():
                         received = radio.read(length)
                         print('Conf of START-NORMAL {}: {}'.format(pipeNo, received.decode('utf-8')))
                         break
-
-def waitStartNormal():
-    """
-        Assumption:
-            Called by a peripheral node
-        Description: 
-            Used to wait for "START-NORMAL" from sendStartNormal()
-    """
-
+# Have now identified nodes from the side of the controller
+# Responses of node
+# Initialization of nodes
+counter = 0
+ack_start = 0
+if (role == "node"):
     print ('Waiting for START-NORMAL')
     ack_payload = "1st Ack Payload from " + str(inp_role)
     radio.writeAckPayload(1, ack_payload)
@@ -492,3 +510,105 @@ def waitStartNormal():
                 break
             radio.startListening()
             ack_start = 1
+
+# Main while loop
+# Operation: 
+# Controller sends REQ commands to nodes
+# Nodes send data to controller
+# Nodes wait again for req commands
+
+# sending of controller
+while 1:
+    if (role ==  "controller"):
+
+        radio.stopListening()
+
+        counter = counter + 1
+        
+        # ping to node 1
+        if (counter%2 == 1) and (found_nodes[0] == 1):
+            
+            radio.openWritingPipe(addr_central_wr[0])
+            #time.sleep(1)
+            data_to_send = "REQ-DATA"
+            #data_to_send = "Someday we'll know, why I wasn't made for you"
+            print('Now sending to Node 1: {}'.format(data_to_send))
+
+            # Send send string
+            if (sendString(data_to_send)):
+                print('Sent string!')
+                radio.startListening()
+                response = recvString()
+                print ('Reponse: {}'.format(response))
+                rec_nparr = np.array(json.loads(response))
+                print('Array ver: {} {}'.format(rec_nparr, len(rec_nparr)))
+            else:
+                print ('Did not send string')
+
+
+        # ping to node 2
+        elif (counter%2 == 0) and (found_nodes[1] == 1):
+            radio.openWritingPipe(addr_central_wr[1])
+            #time.sleep(1)
+            data_to_send = "REQ-DATA"
+            #data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
+            print('Now sending to Node 2: {}'.format(data_to_send))
+            if (sendString(data_to_send)):
+                print('Sent string!')
+                radio.startListening()
+                response = recvString()
+                print ('Reponse: {}'.format(response))
+                
+            else:
+                print ('Did not send string')
+               
+
+
+    elif (role == "node"):
+
+        response = recvString()
+
+        # Now send requested data
+        if (response == "REQ-DATA"):
+            print ("RECEIVED REQ-DATA")
+            radio.stopListening()
+            time.sleep(5)
+            if (inp_role == '1'):
+                #camera.capture(rawCapture, format = "bgr")
+                #img = rawCapture.array
+                img = cv2.imread("Lenna.png")
+                #rawCapture.truncate(0)
+                win_size = (64, 128)
+                img = cv2.resize(img, win_size)
+                img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                hog = cv2.HOGDescriptor()
+                h = hog.compute(img)
+                data_to_send = json.dumps(h.tolist())
+                #data_to_send = np.array_str(h)
+                
+                #data_to_send = str(h)
+                #test_npparr = np.fromstring(data_to_send, np.uint8)
+                #data_to_send = "Someday we'll know, why I wasn't made for you"
+                ('Now sending to controller: {}'.format(data_to_send))
+                logging.debug('The h: {}'.format(h))
+                #test_nparr = ast.literal_eval(data_to_send)
+                test_nparr = np.array(json.loads(data_to_send))
+                logging.debug('Array ver: {} {}'.format(test_nparr, len(test_nparr)))
+                #data_to_send = "Someday we'll know, why I wasn't made for you"
+                
+                if (sendString(data_to_send)):
+                    print('Sent string!')
+                else:
+                    print ('Did not send string')
+            elif (inp_role =='2'):
+                data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
+                print('Now sending to controller: {}'.format(data_to_send))
+                if (sendString(data_to_send)):
+                    print('Sent string!')
+                else:
+                    print ('Did not send string')
+            else:
+                print ("Invalid inp_role")
+        else:
+            print ('Else: Received on Node: {}'.format(response))
+        radio.startListening()

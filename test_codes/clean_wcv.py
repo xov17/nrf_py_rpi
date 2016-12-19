@@ -559,7 +559,7 @@ while 1:
                 if (data_to_compare == response):
                     print ("MATCH on same picture!")
                 else:
-                    print("Was not a match")
+                    print("May have small significant figure differences")
                 recv_arr = np.array(json.loads(response))
 
                 

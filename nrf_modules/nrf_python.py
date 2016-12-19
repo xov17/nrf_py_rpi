@@ -26,9 +26,6 @@ addr_central_rd = [0xF0F0F0F0C1, 0xF0F0F0F0D1, 0xF0F0F0F0E1, 0xF0F0F0F0F1, 0xF0F
 # The read addresses of the peripheral nodes
 addr_central_wr = [0xF0F0F0F0AB, 0xF0F0F0F0BC, 0xF0F0F0F0DE, 0xF0F0F0F0FA, 0xF0F0F0F0BA]
 
-# Not using inp for now
-inp_role = 'none'
-
 #Timeout in seconds for the controller to receive msg from node
 timeout = 5
 
@@ -473,7 +470,8 @@ def waitStartNormal():
         Description: 
             Used to wait for "START-NORMAL" from sendStartNormal()
     """
-
+    counter = 0
+    ack_start = 0
     print ('Waiting for START-NORMAL')
     ack_payload = "1st Ack Payload from " + str(inp_role)
     radio.writeAckPayload(1, ack_payload)

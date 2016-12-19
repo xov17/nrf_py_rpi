@@ -551,7 +551,7 @@ while 1:
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
                 data_to_compare = json.dumps(h.tolist())
-
+                print ("Data_to_compare:{}".format(response))
                 if (data_to_compare == response):
                     print ("MATCH on same picture!")
                 else:

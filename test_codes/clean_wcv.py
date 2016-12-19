@@ -212,6 +212,7 @@ def recvString():
     # Waiting for SEND-STRING command
     counter = 0
     print ('Waiting for SEND-STRING')
+    time_now = 
     while (counter < 10):
         if (radio.available()):
             result, pipeNo = radio.available_pipe()

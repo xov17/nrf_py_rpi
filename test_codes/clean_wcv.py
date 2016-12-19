@@ -518,6 +518,7 @@ if (role == "node"):
 # Nodes send data to controller
 # Nodes wait again for req commands
 counter = 0
+
 # sending of controller
 while 1:
     if (role ==  "controller"):
@@ -525,6 +526,8 @@ while 1:
         radio.stopListening()
 
         counter = counter + 1
+        time_now = 0
+        time_received = 0
         
         # ping to node 1 HAS OPENCV
         if (counter%2 == 1) and (found_nodes[0] == 1):
@@ -534,7 +537,7 @@ while 1:
             data_to_send = "REQ-DATA"
             #data_to_send = "Someday we'll know, why I wasn't made for you"
             print('Now sending to Node 1: {}'.format(data_to_send))
-
+            time_now = time.time()
             # Send send string
             if (sendString(data_to_send)):
                 print('Sent string!')
@@ -544,7 +547,8 @@ while 1:
                     print('Reponse: {}'.format(response))
                 else:
                     logging.debug('Reponse: {}'.format(response))
-
+                time_received = time.time() - time_now
+                print("Time Elapsed: {}".format(str(time_received)))
                 # PROCESS THE SAME IMAGE TO COMPARE
                 img = cv2.imread("Lenna.png")
                 #rawCapture.truncate(0)
@@ -599,11 +603,14 @@ while 1:
             data_to_send = "REQ-DATA"
             #data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
             print('Now sending to Node 2: {}'.format(data_to_send))
+            time_now = time.time()
             if (sendString(data_to_send)):
                 print('Sent string!')
                 radio.startListening()
                 response = recvString()
                 print ('Reponse: {}'.format(response))
+                time_received = time.time() - time_now
+                print("Time Elapsed: {}".format(str(time_received)))
                 
             else:
                 print ('Did not send string')

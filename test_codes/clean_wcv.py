@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Central node alternately sends data to 2 different nodes
+# For if cannot OpenCV
 #
 
 from __future__ import print_function
@@ -10,12 +10,14 @@ import hashlib
 from RF24 import *
 import RPi.GPIO as GPIO
 import ast
+import json
 
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-#import time
-#import cv2
-import numpy as np
+import logging
+
+logging.basicConfig(level=logging.DEBUG,
+					format='%(asctime)s (%(threadName)-2s) %(message)s')
+
+
 
 irq_gpio_pin = None
 
@@ -83,19 +85,19 @@ def sendString(data_to_send):
     hash_orig = hashlib.md5()
     hash_orig.update(data_to_send)
     hash_orig_str = str(hash_orig.hexdigest())
-    print ('{}'.format(hash_orig_str))
-    print ('len: {}'.format(len(hash_orig_str)))
+    logging.debug('{}'.format(hash_orig_str))
+    logging.debug('len: {}'.format(len(hash_orig_str)))
     packet_list = parsePacket(data_to_send)
-    print ('{}'.format(packet_list))
+    logging.debug('{}'.format(packet_list))
     for i in range(len(packet_list)):
-        print ('{}: {}'.format(i, packet_list[i]))
+        logging.debug('{}: {}'.format(i, packet_list[i]))
     joined_list = "".join(packet_list)
-    print ('{}'.format(joined_list))
+    logging.debug('{}'.format(joined_list))
     hash_joined = hashlib.md5()
     hash_joined.update(joined_list)
     hash_joined_str = str(hash_joined.hexdigest())
-    print ('{}'.format(hash_joined_str))
-    print ('{}'.format(len(hash_joined_str)))
+    logging.debug('{}'.format(hash_joined_str))
+    logging.debug('{}'.format(len(hash_joined_str)))
     # Sending Command with retry til sent
     cmd_to_send = "SEND-STRING"
     print('Sending SEND-STRING command: {}'.format(cmd_to_send))
@@ -103,7 +105,7 @@ def sendString(data_to_send):
         if (radio.write(cmd_to_send)):
             if (not radio.available()):
                 node_num = 99
-                print ('Sent START-NORMAL to {}'.format(node_num))
+                logging.debug('Sent START-NORMAL to {}'.format(node_num))
                 break
             else:
                 # possibly another pipe sent something
@@ -122,7 +124,7 @@ def sendString(data_to_send):
         if (radio.write(hash_to_send)):
             if (not radio.available()):
                 node_num = 99
-                print ('Sent START-NORMAL to {}'.format(node_num))
+                logging.debug('Sent START-NORMAL to {}'.format(node_num))
                 break
             else:
                 # possibly another pipe sent something
@@ -135,11 +137,11 @@ def sendString(data_to_send):
 
     # Sending # of packets with retry til sent
     cmd_to_send = "P#:" + str(len(packet_list))
-    print('Sending # of packets: {}'.format(cmd_to_send))
+    print ('Sending # of packets: {}'.format(cmd_to_send))
     while (1):
         if (radio.write(cmd_to_send)):
             if (not radio.available()):
-                print ('Sent # of packets to {}'.format(node_num))
+                logging.debug('Sent # of packets to {}'.format(node_num))
                 break
             else:
                 # possibly another pipe sent something
@@ -155,12 +157,12 @@ def sendString(data_to_send):
         # Writing with auto-acks received
         if (radio.write(packet_list[i])):
             if (not radio.available()):
-                print ('Got blank response')
+                logging.debug('Got blank response')
             else:
                 while (radio.available()):
                     #length = radio.getDynamicPayloadSize()
                     received_payload = radio.read(32)
-                    print('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
+                    logging.debug('Got auto-ack: {}'.format(received_payload.decode('utf-8')))
         else:
             # no ack received
             print('Sending failed')
@@ -171,7 +173,7 @@ def sendString(data_to_send):
     while (1):
         if (radio.write(cmd_to_send)):
             if (not radio.available()):
-                print ('Sent START-NORMAL to {}'.format(node_num))
+                logging.debug('Sent START-NORMAL to {}'.format(node_num))
                 break
             else:
                 # possibly another pipe sent something
@@ -208,7 +210,7 @@ def recvString():
             result, pipeNo = radio.available_pipe()
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
-            print('{}: {}'.format(counter, received.decode('utf-8')))
+            logging.debug('{}: {}'.format(counter, received.decode('utf-8')))
 
             if (received.decode('utf-8') == "SEND-STRING"):
                 radio.startListening()
@@ -250,13 +252,13 @@ def recvString():
             result, pipeNo = radio.available_pipe()
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
-            print('{}: {}'.format(counter, received.decode('utf-8')))
+            logging.debug('{}: {}'.format(counter, received.decode('utf-8')))
             received_data = received.decode('utf-8')
             if (received_data[0:3] == "P#:"):
                 radio.startListening()
                 break
             else:
-                print ("{}".format(received_data))
+                logging.debug("{}".format(received_data))
                 counter = counter + 1
             radio.startListening()
     if (counter == 10):
@@ -276,13 +278,13 @@ def recvString():
             received = radio.read(length)
             radio.stopListening()
             received_string = received.decode('utf-8')
-            print('{}: {}'.format(counter, received_string))
+            logging.debug('{}: {}'.format(counter, received_string))
 
             if (received_string == "END-SEND"):
                 print ('Got END-SEND')
                 break
             else:
-                print ("Appending to packet list")
+                logging.debug("Appending to packet list")
                 packet_list.append(received_string)
             counter = counter + 1
             radio.startListening()
@@ -331,9 +333,15 @@ if (inp_role == '0'):
     counter = 0
 
 elif (inp_role == '1'):
+    # HAS OPENCV
     print('Role: node1 to be accessed, awaiting transmission')
     radio.openWritingPipe(addr_central_rd[0])
     radio.openReadingPipe(1, addr_central_wr[0])
+    from picamera.array import PiRGBArray
+    from picamera import PiCamera
+    import cv2
+    import numpy as np
+    np.set_printoptions(threshold=np.inf)
      # set up camera
     camera = PiCamera()
     rawCapture = PiRGBArray(camera)
@@ -380,7 +388,6 @@ if (role == "controller"):
         radio.write(data_to_send)
         if (radio.txStandBy(2000)):
         #if (radio.write(data_to_send)):
-            time.sleep(1)
             if (radio.available()):
                 length = radio.getDynamicPayloadSize()
                 received = radio.read(length)
@@ -427,7 +434,6 @@ if (role == "controller"):
         radio.write(data_to_send)
         if (radio.txStandBy(2000)):
         #if (radio.write(data_to_send)):
-            time.sleep(1)
             if (radio.available()):
                 length = radio.getDynamicPayloadSize()
                 received = radio.read(length)
@@ -497,7 +503,7 @@ if (role == "node"):
             result, pipeNo = radio.available_pipe()
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
-            print('{}: {}'.format(counter, received.decode('utf-8')))
+            logging.debug('{}: {}'.format(counter, received.decode('utf-8')))
             if (received.decode('utf-8') == "START-NORMAL"):
                 print ('Received START-NORMAL')
                 break
@@ -518,7 +524,7 @@ while 1:
 
         counter = counter + 1
         
-        # ping to node 1
+        # ping to node 1 HAS OPENCV
         if (counter%2 == 1) and (found_nodes[0] == 1):
             
             radio.openWritingPipe(addr_central_wr[0])
@@ -533,11 +539,29 @@ while 1:
                 radio.startListening()
                 response = recvString()
                 print ('Reponse: {}'.format(response))
+
+                # PROCESS THE SAME IMAGE TO COMPARE
+                img = cv2.imread("Lenna.png")
+                #rawCapture.truncate(0)
+                win_size = (64, 128)
+                img = cv2.resize(img, win_size)
+                img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                hog = cv2.HOGDescriptor()
+                h = hog.compute(img)
+                data_to_compare = json.dumps(h.tolist())
+
+                if (data_to_comare == response):
+                    print ("MATCH on same picture!")
+                else:
+                    print("Was not a match")
+
+                #print "Errors: ", i, " lines"
+                #print "Accuracy: ", float(((3780-i)/3780)*100), " percent"
             else:
                 print ('Did not send string')
 
 
-        # ping to node 2
+        # ping to node 2 JUST RECEIVES DATA
         elif (counter%2 == 0) and (found_nodes[1] == 1):
             radio.openWritingPipe(addr_central_wr[1])
             #time.sleep(1)
@@ -549,6 +573,7 @@ while 1:
                 radio.startListening()
                 response = recvString()
                 print ('Reponse: {}'.format(response))
+                
             else:
                 print ('Did not send string')
                
@@ -563,25 +588,33 @@ while 1:
             print ("RECEIVED REQ-DATA")
             radio.stopListening()
             time.sleep(5)
-            # WITH OPENCV
             if (inp_role == '1'):
-                camera.capture(rawCapture, format = "bgr")
-                img = rawCapture.array
+                #camera.capture(rawCapture, format = "bgr")
+                #img = rawCapture.array
+                img = cv2.imread("Lenna.png")
+                #rawCapture.truncate(0)
                 win_size = (64, 128)
                 img = cv2.resize(img, win_size)
                 img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
-                data_to_send = str(h)
-                test_npparr = np.fromstring(data_to_send, np.uint8)
+                data_to_send = json.dumps(h.tolist())
+                #data_to_send = np.array_str(h)
+                
+                #data_to_send = str(h)
+                #test_npparr = np.fromstring(data_to_send, np.uint8)
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
-                print('Now sending to controller: {}'.format(data_to_send))
-                print('Array ver: {} {}'.format(test_npparr, len(test_npparr)))
+                ('Now sending to controller: {}'.format(data_to_send))
+                logging.debug('The h: {}'.format(h))
+                #test_nparr = ast.literal_eval(data_to_send)
+                test_nparr = np.array(json.loads(data_to_send))
+                logging.debug('Array ver: {} {}'.format(test_nparr, len(test_nparr)))
+                #data_to_send = "Someday we'll know, why I wasn't made for you"
+                
                 if (sendString(data_to_send)):
                     print('Sent string!')
                 else:
                     print ('Did not send string')
-            # SENDING A STRING
             elif (inp_role =='2'):
                 data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
                 print('Now sending to controller: {}'.format(data_to_send))

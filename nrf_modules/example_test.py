@@ -72,7 +72,7 @@ while 1:
         counter = counter + 1
         
         # ping to node 1
-        if (counter%2 == 1) and (found_nodes[0] == 1):
+        if (counter%2 == 1) and (nrf_python.found_nodes[0] == 1):
             
             nrf_python.radio.openWritingPipe(addr_central_wr[0])
             #time.sleep(1)

@@ -536,7 +536,7 @@ while 1:
                 response = recvString()
                 print ('Reponse: {}'.format(response))
                 rec_nparr = np.array(json.loads(response))
-                print('Array ver: {} {}'.format(re_nparr, len(rec_nparr)))
+                print('Array ver: {} {}'.format(rec_nparr, len(rec_nparr)))
             else:
                 print ('Did not send string')
 

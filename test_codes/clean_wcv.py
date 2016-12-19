@@ -12,12 +12,19 @@ import RPi.GPIO as GPIO
 import ast
 import json
 
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+#import time
+import cv2
+import numpy as np
+
+
 import logging
 
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
-
+np.set_printoptions(threshold=np.inf)
 
 irq_gpio_pin = None
 
@@ -337,11 +344,6 @@ elif (inp_role == '1'):
     print('Role: node1 to be accessed, awaiting transmission')
     radio.openWritingPipe(addr_central_rd[0])
     radio.openReadingPipe(1, addr_central_wr[0])
-    from picamera.array import PiRGBArray
-    from picamera import PiCamera
-    import cv2
-    import numpy as np
-    np.set_printoptions(threshold=np.inf)
      # set up camera
     camera = PiCamera()
     rawCapture = PiRGBArray(camera)

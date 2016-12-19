@@ -559,7 +559,20 @@ while 1:
                     print ("MATCH on same picture!")
                 else:
                     print("Was not a match")
-
+                recv_arr = np.array(json.loads(response))
+                right = 0
+                wrong = 0
+                # Compare h & recv_arr
+                for x in range(len(h)):
+                    if (h[x] == recv_arr[x]):
+                        right = right + 1
+                    else:
+                        wrong = wrong + 1
+                        print ("Wrong on: \nh[x]: {}\nrecv_arr[x]: {}\n".format(h[x], recv_arr[x]))
+                
+                print ("Errors: {}".format(wrong))
+                accuracy = (right/len(h))*100
+                print ("Accuracy: {}%".format(accuracy))
                 #print "Errors: ", i, " lines"
                 #print "Accuracy: ", float(((3780-i)/3780)*100), " percent"
             else:

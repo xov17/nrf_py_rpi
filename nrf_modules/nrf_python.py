@@ -82,6 +82,7 @@ def sendString(data_to_send):
         Return Values:
             Return 1 if sent, 0 if not
     """
+    global radio
     packet_list = []
     hash_orig = hashlib.md5()
     hash_orig.update(data_to_send)
@@ -205,6 +206,7 @@ def recvString():
         Return Values:
             Return string if properly received, if not, return Error Recv
     """
+    global radio
     # Waiting for SEND-STRING command
     counter = 0
     print ('Waiting for SEND-STRING')

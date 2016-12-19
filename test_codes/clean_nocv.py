@@ -14,7 +14,7 @@ import json
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.CRITICAL,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
 

@@ -470,7 +470,7 @@ if (role == "controller"):
     for node_num in range(len(found_nodes)):
         if found_nodes[node_num]:
             radio.openWritingPipe(addr_central_wr[node_num])
-            #time.sleep(1) 
+            time.sleep(2) 
             #radio.flush_tx()
             #time.sleep(2)
             data_to_send = "START-NORMAL"
@@ -540,7 +540,10 @@ while 1:
                 print('Sent string!')
                 radio.startListening()
                 response = recvString()
-                print ('Reponse: {}'.format(response))
+                if (len(response) < =32):
+                    print('Reponse: {}'.format(response))
+                else:
+                    logging.debug('Reponse: {}'.format(response))
 
                 # PROCESS THE SAME IMAGE TO COMPARE
                 img = cv2.imread("Lenna.png")
@@ -555,7 +558,7 @@ while 1:
                 b = open("wcv0.txt", "r+")
                 b.write(data_to_compare)
                 b.close()
-                print ("Data_to_compare:{}".format(response))
+                logging.debug("Data_to_compare:{}".format(response))
                 if (data_to_compare == response):
                     print ("MATCH on same picture!")
                 else:
@@ -565,6 +568,7 @@ while 1:
                 
                 right = 0
                 wrong = 0
+                print ("Now comparing arrays)")
                 # Compare h & recv_arr
                 for x in range(len(list_to_compare)):
                     temp_comp = str(list_to_compare[x])
@@ -576,7 +580,7 @@ while 1:
                         logging.debug("Right on: \nlist_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, list_to_compare[x], x, recv_arr[x]))
                     else:
                         wrong = wrong + 1
-                        logging.debug("Wrong on: \nlist_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, list_to_compare[x], x, recv_arr[x]))
+                        print("Wrong on: \nlist_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, list_to_compare[x], x, recv_arr[x]))
                 
                 print ("Errors: {}".format(wrong))
                 accuracy = (right/len(h))*100
@@ -634,7 +638,8 @@ while 1:
                 #data_to_send = str(h)
                 #test_npparr = np.fromstring(data_to_send, np.uint8)
                 #data_to_send = "Someday we'll know, why I wasn't made for you"
-                ('Now sending to controller: {}'.format(data_to_send))
+                print ("Sending np array to controller")
+                logging.debug('Now sending to controller: {}'.format(data_to_send))
                 logging.debug('The h: {}'.format(h))
                 #test_nparr = ast.literal_eval(data_to_send)
                 test_nparr = np.array(json.loads(data_to_send))

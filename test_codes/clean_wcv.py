@@ -567,7 +567,11 @@ while 1:
                 wrong = 0
                 # Compare h & recv_arr
                 for x in range(len(list_to_compare)):
-                    if (list_to_compare[x] == recv_arr[x]):
+                    temp_comp = str(list_to_compare[x])
+                    temp_comp = temp_comp[0:3]
+                    temp_recv = str(recv_arr[x])
+                    temp_recv = temp_recv[0:3]
+                    if (temp_recv[x] == temp_comp[x]):
                         right = right + 1
                     else:
                         wrong = wrong + 1

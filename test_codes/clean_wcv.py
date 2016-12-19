@@ -552,7 +552,7 @@ while 1:
                 h = hog.compute(img)
                 data_to_compare = json.dumps(h.tolist())
 
-                if (data_to_comare == response):
+                if (data_to_compare == response):
                     print ("MATCH on same picture!")
                 else:
                     print("Was not a match")

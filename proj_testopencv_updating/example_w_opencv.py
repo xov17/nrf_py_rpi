@@ -11,7 +11,7 @@ from RF24 import *
 import RPi.GPIO as GPIO
 import ast
 import json
-import pynrf24_mod_wcam as nrf
+import pynrf24_wcam_new as nrf
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera

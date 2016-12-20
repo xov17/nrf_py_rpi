@@ -67,7 +67,7 @@ while 1:
             nrf.radio.openWritingPipe(nrf.addr_central_wr[0])
             data_to_send = "REQ-DATA"
             print('Now sending to Node 1: {}'.format(data_to_send))
-
+            time_now = time.time()
             if (nrf.sendString(data_to_send)):
                 print('Sent string!')
                 nrf.radio.startListening()

@@ -19,7 +19,6 @@ import logging
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
-np.set_printoptions(threshold=np.inf)
 
 
 nrf.config()

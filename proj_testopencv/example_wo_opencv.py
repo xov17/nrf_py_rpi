@@ -20,7 +20,6 @@ logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
 
-n
 
 nrf.config()
 

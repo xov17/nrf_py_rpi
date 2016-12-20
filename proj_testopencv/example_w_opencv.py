@@ -88,9 +88,7 @@ while 1:
                 h = hog.compute(img)
                 data_to_compare = json.dumps(h.tolist())
                 list_to_compare = np.array(json.loads(data_to_compare))
-                b = open("wcv0.txt", "r+")
-                b.write(data_to_compare)
-                b.close()
+                
                 logging.debug("Data_to_compare:{}".format(response))
                 if (data_to_compare == response):
                     print ("MATCH on same picture!")

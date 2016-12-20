@@ -16,7 +16,7 @@ import logging
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
-logging.basicConfig(level=logging.CRITICAL,
+logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
 

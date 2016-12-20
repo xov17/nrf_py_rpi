@@ -16,7 +16,7 @@ import pynrf24 as nrf
 
 import logging
 
-logging.basicConfig(level=logging.CRITICAL,
+logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
 

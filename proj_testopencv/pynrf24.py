@@ -13,7 +13,7 @@ import hashlib
 
 import logging
 
-logging.basicConfig(level=logging.CRTICIAL,
+logging.basicConfig(level=logging.CRITICAL,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
 

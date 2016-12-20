@@ -13,7 +13,7 @@ import hashlib
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.CRTICIAL,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
 
 
@@ -299,7 +299,7 @@ def recvString():
 
     print ('{}'.format(packet_list))
     joined_list = "".join(packet_list)
-    print ('{}'.format(joined_list))
+    print ('Joined_list: {}'.format(joined_list))
     hash_joined = hashlib.md5()
     hash_joined.update(joined_list)
     hash_joined_str = str(hash_joined.hexdigest())

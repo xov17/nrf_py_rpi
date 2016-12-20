@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Central node alternately sends data to 2 different nodes
+# PyNRF24 Boilerplate
 #
 from __future__ import print_function
 import time
@@ -12,9 +12,6 @@ import json
 import hashlib
 
 import logging
-
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
@@ -241,7 +238,7 @@ def recvString():
             length = radio.getDynamicPayloadSize()
             received = radio.read(length)
             print('{}: {}'.format(counter, received.decode('utf-8')))
-    
+
             if (len(received.decode('utf-8')) == 32):
                 radio.startListening()
                 break
@@ -338,13 +335,10 @@ def userDefineRoles():
         inp_role = str(input('Choose a role: Enter 0 for controller, 1 for node1, 2 for node2 CTRL+C to exit) '))
 
 
-
     if (inp_role == '0'):
         print('Role: Controller, starting transmission')
-        # radio.openWritingPipe(addr_central_wr[0])
         radio.openReadingPipe(1, addr_central_rd[0])
         radio.openReadingPipe(2, addr_central_rd[1])
-    
         time.sleep(1)
         # TODO: can insert up to 5 readng pipes
         role = "controller"
@@ -356,9 +350,6 @@ def userDefineRoles():
         print('Role: node1 to be accessed, awaiting transmission')
         radio.openWritingPipe(addr_central_rd[0])
         radio.openReadingPipe(1, addr_central_wr[0])
-        # set up camera
-        camera = PiCamera()
-        rawCapture = PiRGBArray(camera)
 
         time.sleep(1)
         role = "node"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Central node alternately sends data to 2 different nodes
+# Central node alternately requests data from the two nodes
 #
 
 from __future__ import print_function
@@ -13,21 +13,15 @@ import ast
 import json
 import pynrf24 as nrf
 
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import cv2
+import numpy as np
 
 import logging
 
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
-
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-
-
-#import time
-import cv2
-import numpy as np
-
-
 
 
 np.set_printoptions(threshold=np.inf)
@@ -44,12 +38,9 @@ result = 0
 
 # detect live nodes
 # retries 3 times 
-
-
 if (role == "controller"):
     nrf.findNodes()
     nrf.sendStartNormal()
-    
 # Have now identified nodes from the side of the controller
 # Responses of node
 # Initialization of nodes
@@ -57,7 +48,7 @@ if (role == "node"):
     nrf.waitStartNormal()
 
 # Main while loop
-# Operation: 
+# Operation:
 # Controller sends REQ commands to nodes
 # Nodes send data to controller
 # Nodes wait again for req commands
@@ -70,45 +61,77 @@ while 1:
         nrf.radio.stopListening()
 
         counter = counter + 1
-        
+
         # ping to node 1
         if (counter%2 == 1) and (nrf.found_nodes[0] == 1):
-            
             nrf.radio.openWritingPipe(nrf.addr_central_wr[0])
-            #time.sleep(1)
             data_to_send = "REQ-DATA"
-            #data_to_send = "Someday we'll know, why I wasn't made for you"
             print('Now sending to Node 1: {}'.format(data_to_send))
 
-            # Send send string
-            if nrf.sendString(data_to_send):
+            ## TO REPLACE
+            if (nrf.sendString(data_to_send)):
                 print('Sent string!')
                 nrf.radio.startListening()
-                response = nrf.recvString()
-                print ('Reponse: {}'.format(response))
-                rec_nparr = np.array(json.loads(response))
-                print('Array ver: {} {}'.format(rec_nparr, len(rec_nparr)))
-            else:
-                print ('Did not send string')
+                response = recvString()
+                if (len(response) <= 32):
+                    print('Reponse: {}'.format(response))
+                else:
+                    logging.debug('Reponse: {}'.format(response))
+                time_received = time.time() - time_now
+                print("Time Elapsed: {}".format(str(time_received)))
+                # PROCESS THE SAME IMAGE TO COMPARE
+                img = cv2.imread("Lenna.png")
+                #rawCapture.truncate(0)
+                win_size = (64, 128)
+                img = cv2.resize(img, win_size)
+                img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                hog = cv2.HOGDescriptor()
+                h = hog.compute(img)
+                data_to_compare = json.dumps(h.tolist())
+                list_to_compare = np.array(json.loads(data_to_compare))
+                b = open("wcv0.txt", "r+")
+                b.write(data_to_compare)
+                b.close()
+                logging.debug("Data_to_compare:{}".format(response))
+                if (data_to_compare == response):
+                    print ("MATCH on same picture!")
+                else:
+                    print("May have small significant figure differences")
+                recv_arr = np.array(json.loads(response))
 
+                right = 0
+                wrong = 0
+                print ("Now comparing arrays)")
+                # Compare h & recv_arr
+                for x in range(len(list_to_compare)):
+                    temp_comp = str(list_to_compare[x])
+                    temp_comp = temp_comp[0:3]
+                    temp_recv = str(recv_arr[x])
+                    temp_recv = temp_recv[0:3]
+                    if (temp_recv == temp_comp):
+                        right = right + 1
+                        logging.debug("Right on: \nlist_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, list_to_compare[x], x, recv_arr[x]))
+                    else:
+                        wrong = wrong + 1
+                        print("Wrong on: \nlist_to_compare[{}]: {}\nrecv_arr[{}]: {}\n".format(x, list_to_compare[x], x, recv_arr[x]))
+
+                print ("Errors: {}".format(wrong))
+                accuracy = (right/len(h))*100
+                print ("Accuracy: {}%".format(accuracy))
 
         # ping to node 2
         elif (counter%2 == 0) and (nrf.found_nodes[1] == 1):
             nrf.radio.openWritingPipe(nrf.addr_central_wr[1])
-            #time.sleep(1)
             data_to_send = "REQ-DATA"
-            #data_to_send = "90 miles outside Chicago, can't stop driving, I don't know why. So many questions, I need an answer. Two years later, you're still on my mind."
             print('Now sending to Node 2: {}'.format(data_to_send))
             if (sendString(data_to_send)):
                 print('Sent string!')
                 nrf.radio.startListening()
                 response = nrf.recvString()
                 print ('Reponse: {}'.format(response))
-                
+
             else:
                 print ('Did not send string')
-               
-
 
     elif (role == "node"):
 
@@ -130,18 +153,11 @@ while 1:
                 hog = cv2.HOGDescriptor()
                 h = hog.compute(img)
                 data_to_send = json.dumps(h.tolist())
-                #data_to_send = np.array_str(h)
-                
-                #data_to_send = str(h)
-                #test_npparr = np.fromstring(data_to_send, np.uint8)
-                #data_to_send = "Someday we'll know, why I wasn't made for you"
                 ('Now sending to controller: {}'.format(data_to_send))
                 logging.debug('The h: {}'.format(h))
-                #test_nparr = ast.literal_eval(data_to_send)
                 test_nparr = np.array(json.loads(data_to_send))
                 logging.debug('Array ver: {} {}'.format(test_nparr, len(test_nparr)))
-                #data_to_send = "Someday we'll know, why I wasn't made for you"
-                
+
                 if (nrf.sendString(data_to_send)):
                     print('Sent string!')
                 else:

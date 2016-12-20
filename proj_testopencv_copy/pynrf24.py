@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# PyNRF24 Boilerplate
+# Central node alternately sends data to 2 different nodes
 #
 from __future__ import print_function
 import time
@@ -12,6 +12,9 @@ import json
 import hashlib
 
 import logging
+
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s (%(threadName)-2s) %(message)s')
@@ -206,6 +209,7 @@ def recvString():
         Return Values:
             Return string if properly received, if not, return Error Recv
     """
+
     global radio
     # Waiting for SEND-STRING command
     counter = 0
@@ -339,6 +343,7 @@ def userDefineRoles():
         print('Role: Controller, starting transmission')
         radio.openReadingPipe(1, addr_central_rd[0])
         radio.openReadingPipe(2, addr_central_rd[1])
+    
         time.sleep(1)
         # TODO: can insert up to 5 readng pipes
         role = "controller"
@@ -350,6 +355,9 @@ def userDefineRoles():
         print('Role: node1 to be accessed, awaiting transmission')
         radio.openWritingPipe(addr_central_rd[0])
         radio.openReadingPipe(1, addr_central_wr[0])
+        # set up camera
+        camera = PiCamera()
+        rawCapture = PiRGBArray(camera)
 
         time.sleep(1)
         role = "node"

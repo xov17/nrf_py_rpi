@@ -138,7 +138,7 @@ def sendString(data_to_send):
                 length = radio.getDynamicPayloadSize()
                 received = radio.read(length)
                 recv_cmd = received.decode('utf-8')
-                if (recv_cmd[0:21] == "Received hash"):
+                if (recv_cmd[0:13] == "Received hash"):
                     logging.debug('AP: {}'.format(recv_cmd))
                     break
                 else:
